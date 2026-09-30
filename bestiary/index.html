@@ -159,6 +159,30 @@ details.world textarea { width: 100%; min-height: 140px; margin-top: 10px; paddi
 .vignette p::first-letter { font-family: var(--f-display); font-style: normal; font-size: 2.4em; float: left; line-height: .8; padding: 6px 8px 0 0; color: var(--clot-hi); }
 .editnote { font-family: var(--f-tag); font-size: 12px; color: var(--ok); letter-spacing: .04em; }
 
+/* Art prompt */
+.plate-col { display: grid; gap: 18px; min-width: 0; }
+.plate-col .plate { position: static; }
+@media (max-width: 1100px) { .plate-col { position: static; max-width: 560px; justify-self: center; width: 100%; } }
+.paper.has-art { transform: rotate(-.6deg); }
+.paper img.art { position: absolute; inset: 14px; width: calc(100% - 28px); height: calc(100% - 28px); object-fit: cover; box-shadow: 0 0 0 1px rgba(29,23,18,.5); }
+.paper .blank .steps { text-align: left; margin: 0 auto; padding-left: 20px; font-size: 14px; line-height: 1.6; }
+.linkish { background: none; border: 0; color: var(--ink); text-decoration: underline; cursor: pointer; font-family: var(--f-tag); font-size: 12px; }
+.attach { cursor: pointer; }
+.paper .blank .attach { background: var(--ink); color: var(--paper); border-color: var(--ink); justify-self: center; }
+.artcard { display: grid; gap: 10px; }
+.artcard .panel-h { margin-bottom: 0; }
+.seg { display: grid; grid-template-columns: 1fr 1fr; border: 1px solid var(--seam); border-radius: var(--r); overflow: hidden; }
+.seg button { background: var(--void); border: 0; padding: 9px 10px; cursor: pointer; font-family: var(--f-tag); letter-spacing: .06em; }
+.seg button + button { border-left: 1px solid var(--seam); }
+.seg button[aria-pressed=true] { background: var(--clot); color: #f4ece0; }
+.seg button:disabled { cursor: not-allowed; }
+.artcard select { background: var(--void); border: 1px solid var(--seam); border-radius: var(--r); padding: 8px 10px; }
+.artcard textarea { width: 100%; resize: vertical; background: var(--void); border: 1px solid var(--seam); border-radius: var(--r); padding: 10px 12px; font-size: 14px; line-height: 1.5; color: var(--bone); }
+.artcard .row { margin: 0; }
+.artcard a.btn { text-decoration: none; color: var(--bone); }
+.fine { margin: 0; font-size: 13px; color: var(--ash); font-style: italic; }
+.slot .thumb img.photo { filter: none; }
+
 /* Surgery */
 .surgery { margin-top: 26px; border-color: var(--clot-dim); background: linear-gradient(180deg, rgba(143,28,21,.08), transparent 60%), var(--crypt); }
 .chips { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
@@ -282,7 +306,17 @@ const INTENSITY = {
   5: ["Apocalyptic", "Apocalyptic. Maximum excess: the trait has eaten the whole body and the surrounding space. Freddy Krueger should need to sit down."]
 };
 const PHASES = ["Reconstructing the breaking point", "Isolating the trait that took over", "Letting it have the body", "Cataloguing what is left of them", "Writing up the case file"];
-const TARGETS = ["Anywhere", "Name", "Anatomy", "Behavior", "Weaknesses", "Backstory", "Sketch only"];
+const TARGETS = ["Anywhere", "Name", "Anatomy", "Behavior", "Weaknesses", "Backstory", "Art prompt only"];
+const MODELS = {
+  chatgpt: { label: "ChatGPT", url: "https://chatgpt.com/", guide: `ChatGPT's image generator (GPT image). It follows long, precise natural-language instructions very well. Write 140-210 words of clear descriptive prose in full sentences, ordered: subject and pose, the signature feature, body details, human remnants, setting, lighting, camera and framing, medium and finish, mood. Open with "Create an image:" and end with one sentence asking for a tall portrait (2:3) with no text, no watermark, and nothing cartoonish. Its filters reject graphic gore and anything sexual, so convey horror through anatomy, wrongness, texture and atmosphere, and describe wounds with words like raw, split, fused, stretched, weeping rather than blood and gore.` },
+  grok: { label: "Grok", url: "https://grok.com/imagine", guide: `Grok Imagine on grok.com (xAI's image model). It responds best to a compact, front-loaded prompt: 55-95 words. Put the creature and its signature feature in the first clause, then comma-separated visual descriptors: key anatomy, human remnants, setting, lighting, lens or framing, medium, color palette, mood. No full paragraphs, no instructions or "please", no aspect-ratio text (the user sets that in the app). It tolerates darker imagery than ChatGPT, but horror through wrongness and texture still beats gore.` }
+};
+const STYLES = {
+  concept: { label: "Concept art", text: "Professional creature concept art: a full-body character design painting for a horror film's production art department, highly detailed, painterly rendering, dramatic rim light, dark neutral backdrop." },
+  cinematic: { label: "Film still", text: "A still frame from a big-budget horror film: a practical-effects creature, photoreal skin and wet textures, anamorphic lens, shallow depth of field, motivated practical lighting, heavy film grain, desaturated grade." },
+  found: { label: "Found photo", text: "A found photograph that looks real and accidental: harsh on-camera flash or night-vision trail-camera shot, motion blur, awkward snapshot framing, cheap lens distortion, the creature half-caught in frame." },
+  oil: { label: "Dark oil painting", text: "A dark oil painting in the tradition of old-master chiaroscuro and 1970s horror paperback covers: heavy shadows, visible brushwork, muted earth palette with one sickly accent color." }
+};
 
 const WORLD_RULES = `You are the creature designer for a horror novel. Every creature in this world:
 - was once an ordinary human being;
@@ -389,71 +423,6 @@ function inlineSvg(svg) {
 }
 
 /* ---------- example specimen (shown until the vault has something) ---------- */
-function exampleSvg() {
-  const I = "#1d1712", A = "#7a1410";
-  const p = [];
-  const path = (d, w = 2.2, extra = "") => p.push(`<path d="${d}" stroke-width="${w}" ${extra}/>`);
-  p.push(`<ellipse cx="300" cy="756" rx="175" ry="14" fill="${I}" fill-opacity=".14" stroke="none"/>`);
-  // head, hair coming undone
-  path("M300 60 C262 62 246 104 250 146 C254 186 272 210 300 214 C328 210 346 186 350 146 C354 104 338 62 300 60 Z", 3, `fill="${I}" fill-opacity=".06"`);
-  path("M262 84 C250 60 272 38 300 40 C330 38 350 60 338 84", 2.5);
-  for (let i = 0; i < 11; i++) path(`M${266 + i * 7} ${56 + (i % 3) * 3} C${262 + i * 8} ${34 - (i % 4) * 4} ${250 + i * 11} ${40 + (i % 3) * 6} ${236 + i * 13} ${26 + (i % 5) * 9}`, .9);
-  // sunken sockets, lidless eyes, pinprick pupils
-  for (const x of [279, 321]) {
-    path(`M${x - 17} 136 C${x - 14} 118 ${x + 14} 118 ${x + 17} 136 C${x + 14} 152 ${x - 14} 152 ${x - 17} 136 Z`, 1.6, `fill="${I}" fill-opacity=".55"`);
-    p.push(`<ellipse cx="${x}" cy="136" rx="10" ry="8" fill="#d8ccb1" stroke-width="1.4"/><circle cx="${x + (x < 300 ? 2 : -2)}" cy="136" r="1.8" fill="${I}"/>`);
-    for (let k = 0; k < 5; k++) path(`M${x - 8 + k * 4} 127 l${-2 + k} -8`, 1.2);
-    path(`M${x - 6} 146 C${x - 4} 158 ${x - 7} 168 ${x - 10} 176`, .9, `stroke="${A}"`);
-  }
-  // hollow cheeks
-  for (let i = 0; i < 7; i++) { path(`M${258 + i * 2} ${158 + i * 6} l8 -5`, .9); path(`M${342 - i * 2} ${158 + i * 6} l-8 -5`, .9); }
-  // unhinged jaw hanging open past the chin
-  path("M286 164 C282 196 284 236 292 268 L308 268 C316 236 318 196 314 164 C306 172 294 172 286 164 Z", 2, `fill="${I}"`);
-  path("M292 262 C296 272 304 272 308 262", 1.4, `fill="${A}" fill-opacity=".8"`);
-  for (let t = 0; t < 5; t++) path(`M${289 + t * 5.5} 168 l1 7`, 1.2, `stroke="#d8ccb1"`);
-  // headset mic
-  path("M252 126 C238 150 244 184 280 190", 2); p.push(`<circle cx="282" cy="190" r="4" fill="${I}"/>`);
-  // long neck with vertebrae
-  path("M284 212 C281 256 278 292 268 322", 2.4); path("M316 212 C319 256 322 292 332 322", 2.4);
-  for (let i = 0; i < 6; i++) p.push(`<ellipse cx="300" cy="${228 + i * 16}" rx="7" ry="5" stroke-width="1.4"/>`);
-  // shoulders and torso
-  path("M268 322 C228 324 198 334 176 354", 2.8); path("M332 322 C372 324 402 334 424 354", 2.8);
-  path("M196 348 C202 424 214 486 240 544", 2.6); path("M404 348 C398 424 386 486 360 544", 2.6);
-  path("M240 544 C272 564 328 564 360 544", 2.4);
-  // the curtain: split sternum
-  path("M300 330 C246 360 238 468 300 528 C362 468 354 360 300 330 Z", 2.6, `fill="${A}" fill-opacity=".35"`);
-  path("M300 344 C262 372 258 460 300 512 C342 460 338 372 300 344 Z", 1.2, `fill="${I}" fill-opacity=".55"`);
-  // curtain folds
-  for (let i = 0; i < 5; i++) { path(`M${258 - i * 4} ${370 + i * 26} C${248 - i * 6} ${380 + i * 26} ${240 - i * 6} ${392 + i * 26} ${226 - i * 4} ${398 + i * 26}`, 1.4); path(`M${342 + i * 4} ${370 + i * 26} C${352 + i * 6} ${380 + i * 26} ${360 + i * 6} ${392 + i * 26} ${374 + i * 4} ${398 + i * 26}`, 1.4); }
-  // small clapping hands inside
-  const hand = (x, y, flip) => {
-    const s = flip ? -1 : 1;
-    path(`M${x} ${y} c${6 * s} -4 ${14 * s} -4 ${18 * s} 2 c${2 * s} 6 ${-2 * s} 12 ${-10 * s} 12 c${-6 * s} 0 ${-10 * s} -6 ${-8 * s} -14 z`, 1.3, `fill="${"#d8ccb1"}" fill-opacity=".85"`);
-    for (let f = 0; f < 4; f++) path(`M${x + (4 + f * 4) * s} ${y - 2} l${(1 + f) * s} -9`, 1.1);
-  };
-  for (let r = 0; r < 5; r++) { hand(276, 378 + r * 26, false); hand(324, 378 + r * 26, true); }
-  // arms, presenter's flourish
-  path("M178 354 C160 430 150 520 146 606", 2.6); path("M190 360 C176 434 166 520 160 606", 1.6);
-  path("M422 354 C446 410 474 440 506 452", 2.6); path("M414 366 C436 418 462 452 498 466", 1.6);
-  for (let f = 0; f < 5; f++) path(`M${150 + f * 3} 606 C${146 + f * 4} ${640 + f * 4} ${140 + f * 6} ${672 + f * 6} ${136 + f * 8} ${700 + f * 3}`, 1.5);
-  for (let f = 0; f < 5; f++) path(`M${502} ${452 + f * 3} C${526 + f * 2} ${440 - f * 8} ${546 + f * 3} ${428 - f * 12} ${558 + f * 2} ${414 - f * 14}`, 1.5);
-  // tattered skirt
-  path("M236 540 L216 604 L236 594 L230 630 L254 606 L262 642 L278 610 L292 648 L304 612 L320 646 L330 610 L348 640 L352 602 L372 624 L366 588 L384 598 L364 540", 1.8, `fill="${I}" fill-opacity=".12"`);
-  // legs and snapped heels
-  path("M262 610 C256 660 250 706 244 744", 2.6); path("M340 610 C346 660 352 706 358 744", 2.6);
-  path("M244 744 L220 750 M244 744 L248 758 L240 766", 2); path("M358 744 L384 748 M358 744 L352 756 L362 766", 2);
-  // hatching on the left flank
-  for (let i = 0; i < 22; i++) path(`M${204 + i * 1.4} ${368 + i * 7} l14 -10`, .9);
-  for (let i = 0; i < 12; i++) path(`M${160 + i} ${420 + i * 14} l10 -6`, .8);
-  // spotlight cone
-  p.push(`<path d="M300 0 L120 780 L480 780 Z" fill="${I}" fill-opacity=".04" stroke="none"/>`);
-  // annotations
-  const note = (x1, y1, x2, y2, txt, anchor = "start") => { path(`M${x1} ${y1} C${(x1 + x2) / 2} ${y1 - 12} ${(x1 + x2) / 2} ${y2 + 8} ${x2} ${y2}`, .9); p.push(`<text x="${x2 + (anchor === "start" ? 6 : -6)}" y="${y2 + 5}" text-anchor="${anchor}" font-family="Special Elite, Courier New, monospace" font-size="15" fill="${I}" stroke="none">${txt}</text>`); };
-  note(338, 132, 420, 96, "no lids");
-  note(332, 440, 400, 560, "hands clap on reflex");
-  note(262, 186, 170, 250, "mic still live", "end");
-  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 800"><g fill="none" stroke="${I}" stroke-linecap="round" stroke-linejoin="round">${p.join("")}</g></svg>`;
-}
 const EXAMPLE = {
   id: "example", kind: "creature", isExample: true, createdAt: 0, pinned: false,
   prompt: "a dance mom who lost it at her kid's recital", intensity: 4,
@@ -488,7 +457,10 @@ const EXAMPLE = {
   },
   svg: null, rev: 0, lastEdit: null, prev: null
 };
-EXAMPLE.svg = exampleSvg();
+EXAMPLE.artPrompts = {
+  "chatgpt:concept": "Create an image: a full-body creature concept painting of a horrifically tall, gaunt woman, seven and a half feet, standing alone on an empty school stage under a single hard spotlight, bowing slowly from the waist toward the viewer. Her sternum is split vertically from collarbone to navel and parted like theatre curtains, the raw edges lined with torn sequins; inside, where ribs should be, rows of small pale human hands are pressed palm to palm mid-clap. Her neck is stretched nearly two feet long, the vertebrae showing through the skin like a string of pearls. Her eyes have no lids: dry, cracked, bloodshot and fixed on the viewer, with clumps of false eyelashes still glued above them. A headset microphone is fused into her cheek. One arm is raised in a presenter's flourish, the fingers stretched to twice their length. She wears the shredded remains of a sequined recital costume and snapped high heels. Dust hangs in the spotlight beam; rows of empty folding chairs fade into darkness below the stage. Painterly, highly detailed horror film production art, dramatic rim light, sickly warm stage light against cold blue-black shadow, a mood of stillness and dread. Make it a tall portrait (2:3) with no text, no watermark, and nothing cartoonish.",
+  "grok:concept": "Horrifically tall gaunt woman bowing under a single stage spotlight, chest split open vertically like theatre curtains revealing rows of small pale human hands mid-clap, lidless bloodshot eyes staring into camera, clumped false eyelashes, neck stretched two feet long with vertebrae like pearls, headset microphone fused into her cheek, elongated fingers frozen in a presenter's flourish, shredded sequined recital costume, snapped heels, empty school auditorium, dust in the light beam, creature concept art, painterly, hyper-detailed, dramatic rim light, cold black shadows, dread"
+};
 
 /* ---------- state ---------- */
 const state = {
@@ -500,7 +472,11 @@ const state = {
   confirm: null,      // {kind, id, text}
   sampleOk: true,
 };
-let sample = null, downloads = null, store = null, ctl = null;
+let sample = null, downloads = null, assets = null, store = null, ctl = null;
+const pref = (k, d, ok) => { try { const v = localStorage.getItem(k); return ok(v) ? v : d; } catch { return d; } };
+state.artModel = pref("bestiary.model", "chatgpt", v => v in MODELS);
+state.artStyle = pref("bestiary.style", "concept", v => v in STYLES);
+const artKey = () => state.artModel + ":" + state.artStyle;
 
 const creatures = () => state.items.filter(c => c.kind === "creature");
 const pinned = () => creatures().filter(c => c.pinned).sort((a, b) => (a.pinnedAt || 0) - (b.pinnedAt || 0));
@@ -572,6 +548,8 @@ function persist(rec) {
   return store.put(copy);
 }
 function forget(id) {
+  const gone = state.items.find(x => x.id === id);
+  if (gone && gone.art && gone.art.id && assets) assets.delete(gone.art.id).catch(() => {});
   state.items = state.items.filter(x => x.id !== id);
   render();
   return store.remove(id);
@@ -652,6 +630,37 @@ Reply with only one JSON object:
 {"dossier": <the full updated creature, same shape and keys>, "summary": "one short line saying what changed", "sketchNeedsUpdate": true or false (true only if the creature's visible body, pose or clothing changed)}`;
 }
 
+function artRequest(d, model, style) {
+  return `You write prompts for AI image generators. Write ONE prompt for ${MODELS[model].guide}
+
+Goal: a genuinely terrifying, high-quality image of this horror creature. Style: ${STYLES[style].text}
+
+THE CREATURE
+The flaw made flesh (make this the focal point): ${d.flaw}. ${d.irony}
+Appearance: ${d.appearance}
+Anatomy: ${d.anatomy.map(a => a.part + ": " + a.detail).join(" | ")}
+Human remnants: ${d.remnant}
+Visual brief: ${d.sketchBrief}
+Where it hunts: ${d.classification}
+
+Rules:
+- Describe only what a camera or painter can show. No names, no backstory, no story sentences.
+- Keep the human remnants visible; they make it worse.
+- Choose a setting and moment that fit how it hunts, and a pose that reads as predatory.
+- No living artists' names. No text, captions or labels in the image.
+Reply with only the prompt text, nothing else.`;
+}
+function artEditRequest(oldPrompt, instr, model) {
+  return `Here is an image-generation prompt written for ${MODELS[model].label}. Apply this one change and keep everything else as it is, in the same format and length.
+
+CHANGE: ${instr}
+
+PROMPT:
+${oldPrompt}
+
+Reply with only the revised prompt text.`;
+}
+
 /* ---------- normalize ---------- */
 const str = (v, d = "") => (typeof v === "string" ? v : v == null ? d : String(v)).trim();
 function normalize(d) {
@@ -700,6 +709,67 @@ async function drawSketch(d, signal, oldSvg, instr) {
   return svg;
 }
 
+async function writeArt(rec, signal) {
+  const { text } = await sample(artRequest(rec.dossier, state.artModel, state.artStyle), {
+    signal, cache: false, modelTier: "default", onText: ({ text }) => setProgress(text.length),
+  });
+  return text.trim().replace(/^```\w*\n?|```$/g, "").trim();
+}
+async function makeArt(id) {
+  const rec = id === "example" ? EXAMPLE : creatures().find(c => c.id === id);
+  if (!rec || state.busy || !sample) return;
+  ctl = new AbortController();
+  setBusy({ phase: 0, chars: 0, what: "art" });
+  try {
+    const text = await writeArt(rec, ctl.signal);
+    if (rec.isExample) { EXAMPLE.artPrompts = { ...(EXAMPLE.artPrompts || {}), [artKey()]: text }; }
+    else { const next = plain(rec); next.artPrompts = { ...(next.artPrompts || {}), [artKey()]: text }; await persist(next); }
+  } catch (e) { toast(errCopy(e)); }
+  finally { setBusy(null); }
+}
+async function copyArt(text) {
+  try { await navigator.clipboard.writeText(text); toast(`Copied. Paste it into ${MODELS[state.artModel].label}.`); }
+  catch { const ta = $("#art-text"); if (ta) { ta.focus(); ta.select(); } toast("Copy was blocked here. The prompt is selected; copy it by hand."); }
+}
+function shrinkImage(file) {
+  return new Promise((resolve, reject) => {
+    const url = URL.createObjectURL(file);
+    const img = new Image();
+    img.onload = () => {
+      const k = Math.min(1, 1600 / Math.max(img.naturalWidth, img.naturalHeight));
+      const cv = document.createElement("canvas");
+      cv.width = Math.round(img.naturalWidth * k); cv.height = Math.round(img.naturalHeight * k);
+      cv.getContext("2d").drawImage(img, 0, 0, cv.width, cv.height);
+      URL.revokeObjectURL(url);
+      cv.toBlob(b => b ? resolve(b) : reject(new Error("encode")), "image/jpeg", 0.88);
+    };
+    img.onerror = () => { URL.revokeObjectURL(url); reject(new Error("decode")); };
+    img.src = url;
+  });
+}
+async function attachArt(id, file) {
+  const rec = creatures().find(c => c.id === id);
+  if (!rec || !file || !assets) return;
+  if (!/^image\//.test(file.type)) { toast("That isn't an image file. Save the picture from ChatGPT or Grok, then attach it."); return; }
+  setBusy({ phase: 0, chars: 0, what: "upload" });
+  try {
+    const blob = await shrinkImage(file);
+    const up = await assets.upload(blob);
+    const old = rec.art && rec.art.id;
+    await persist({ ...plain(rec), art: { id: up.id, url: up.url, model: state.artModel } });
+    if (old) assets.delete(old).catch(() => {});
+    toast("Image attached to " + rec.dossier.name + ".");
+  } catch (e) { toast(e && e.code === "quota_exceeded" ? "Image storage is full. Destroy an old creature to free space." : "Couldn't attach that image. Try a JPG or PNG under 20 MB."); }
+  finally { setBusy(null); }
+}
+async function detachArt(id) {
+  const rec = creatures().find(c => c.id === id);
+  if (!rec || !rec.art) return;
+  const old = rec.art.id;
+  await persist({ ...plain(rec), art: null });
+  if (old && assets) assets.delete(old).catch(() => {});
+}
+
 async function summon() {
   if (state.busy) return;
   const text = $("#prompt").value.trim();
@@ -721,12 +791,12 @@ async function summon() {
     state.currentId = rec.id;
     await persist(rec);
     await enforceRecent();
-    setBusy({ phase: 0, chars: 0, what: "sketch" });
-    rec.svg = await drawSketch(dossier, signal);
+    setBusy({ phase: 0, chars: 0, what: "art" });
+    rec.artPrompts = { [artKey()]: await writeArt(rec, signal) };
     await persist(rec);
   } catch (e) {
     if (e && e.code !== "cancelled") console.warn(e);
-    toast(rec ? "The creature is saved, but the sketch failed. " + errCopy(e) : errCopy(e));
+    toast(rec ? "The creature is saved, but the art prompt failed. Use Write prompt to try again. " + errCopy(e) : errCopy(e));
   } finally {
     setBusy(null);
   }
@@ -756,19 +826,28 @@ async function surgery() {
   const alsoSketch = $("#surg-sketch").checked;
   const next = plain(rec);
   if (next.isExample) { next.id = uid(); next.isExample = false; next.createdAt = Date.now(); }
-  next.prev = rec.isExample ? null : { dossier: rec.dossier, svg: rec.svg, lastEdit: rec.lastEdit };
+  next.prev = rec.isExample ? null : { dossier: rec.dossier, svg: rec.svg, lastEdit: rec.lastEdit, artPrompts: rec.artPrompts || null };
   try {
-    if (target === "Sketch only") {
-      if (!rec.svg) throw { code: "invalid_json" };
-      setBusy({ phase: 0, chars: 0, what: "sketch-edit" });
-      next.svg = await drawSketch(next.dossier, signal, rec.svg, instr);
-      next.lastEdit = "Sketch: " + instr;
+    if (target === "Art prompt only") {
+      const cur = (rec.artPrompts || {})[artKey()];
+      setBusy({ phase: 0, chars: 0, what: "art" });
+      const { text } = cur
+        ? await sample(artEditRequest(cur, instr, state.artModel), { signal, cache: false, modelTier: "default", onText: ({ text }) => setProgress(text.length) })
+        : { text: await writeArt({ dossier: { ...rec.dossier, sketchBrief: rec.dossier.sketchBrief + " " + instr } }, signal) };
+      next.artPrompts = { ...(rec.artPrompts || {}), [artKey()]: text.trim() };
+      next.lastEdit = "Art prompt: " + instr;
     } else {
       setBusy({ phase: 0, chars: 0, what: "edit" });
       const res = await sample.json(editPrompt(rec, instr, target), { signal, cache: false, modelTier: "default", onText: ({ text }) => setProgress(text.length) });
       next.dossier = normalize(res && res.dossier);
       next.lastEdit = str(res && res.summary) || instr;
       next.rev = (rec.rev || 0) + 1;
+      // the creature changed, so cached art prompts are stale: rewrite the one in use
+      next.artPrompts = null;
+      await persist(next);
+      if (rec.isExample) { state.currentId = next.id; await enforceRecent(); }
+      setBusy({ phase: 0, chars: 0, what: "art" });
+      next.artPrompts = { [artKey()]: await writeArt(next, signal) };
       if (alsoSketch && res && res.sketchNeedsUpdate && rec.svg) {
         await persist(next); // save the text edit before the slower redraw
         if (rec.isExample) { state.currentId = next.id; await enforceRecent(); }
@@ -790,7 +869,7 @@ async function undo(id) {
   const rec = creatures().find(c => c.id === id);
   if (!rec || !rec.prev) return;
   const next = plain(rec);
-  next.dossier = rec.prev.dossier; next.svg = rec.prev.svg; next.lastEdit = rec.prev.lastEdit; next.prev = null;
+  next.dossier = rec.prev.dossier; next.svg = rec.prev.svg; next.lastEdit = rec.prev.lastEdit; next.artPrompts = rec.prev.artPrompts || null; next.prev = null;
   next.rev = Math.max(0, (rec.rev || 1) - 1);
   await persist(next);
   toast("Last edit undone.");
@@ -874,7 +953,7 @@ function setProgress(n) { if (state.busy) { state.busy.chars = n; paintRitual();
 function ritualText() {
   const b = state.busy;
   if (!b) return ["", ""];
-  const msg = { dossier: PHASES[b.phase], sketch: "Inking the plate", "sketch-edit": "Re-inking the plate", edit: "Operating" }[b.what];
+  const msg = { dossier: PHASES[b.phase], sketch: "Inking the plate", "sketch-edit": "Re-inking the plate", edit: "Operating", art: `Writing the ${MODELS[state.artModel].label} prompt`, upload: "Attaching the image" }[b.what];
   const n = b.chars ? `${b.chars.toLocaleString()} characters transcribed` : "Thinking… this can take up to a minute";
   return [msg + "…", n];
 }
@@ -898,6 +977,7 @@ function ecgSvg() {
 
 /* ---------- render ---------- */
 function thumb(c) {
+  if (c.art && c.art.url) return h("span", { class: "thumb" }, h("img", { src: c.art.url, alt: "", class: "photo" }));
   return h("span", { class: "thumb" }, c.svg ? h("img", { src: svgUrl(c.svg), alt: "" }) : h("span", null, (c.dossier.name || "?")[0]));
 }
 function slot(c, opts = {}) {
@@ -966,18 +1046,55 @@ function renderSpecimen() {
   }
 
   // plate
-  const paper = h("div", { class: "paper" });
+  const paper = h("div", { class: "paper" + (c.art && c.art.url ? " has-art" : "") });
   const sketching = b && (b.what === "sketch" || b.what === "sketch-edit");
-  if (c.svg && !(sketching && b.what === "sketch")) {
+  const canAttach = !!assets && !isEx;
+  const attachBtn = label => h("label", { class: "btn small attach", for: "art-file" }, label);
+  if (c.art && c.art.url) {
+    paper.append(h("img", { class: "art", src: c.art.url, alt: "Generated image of " + d.name }));
+  } else if (c.svg && !(sketching && b.what === "sketch")) {
     try { paper.append(inlineSvg(c.svg)); paper.lastChild.setAttribute("aria-label", "Ink sketch of " + d.name); } catch { /* bad svg */ }
   }
   if (sketching) {
     paper.append(h("div", { class: "blank", style: c.svg ? "background: rgba(216,204,177,.78)" : null }, h("span", { "data-phase": "" }, ritualText()[0]), h("small", { "data-count": "" }, ritualText()[1])));
-  } else if (!c.svg) {
-    paper.append(h("div", { class: "blank" }, h("span", null, "No plate yet."), sample && !isEx ? h("button", { class: "btn small", type: "button", onclick: () => redraw(c.id) }, "Draw the sketch") : null));
+  } else if (!c.svg && !(c.art && c.art.url)) {
+    paper.append(h("div", { class: "blank" },
+      h("span", null, "No image yet."),
+      h("ol", { class: "steps" }, h("li", null, "Copy the art prompt below."), h("li", null, `Paste it into ${MODELS[state.artModel].label}.`), h("li", null, "Save the picture and attach it here.")),
+      canAttach ? attachBtn("Attach image") : null,
+      sample && !isEx ? h("button", { class: "linkish", type: "button", onclick: () => redraw(c.id) }, "or draw a rough ink sketch") : null));
   }
-  const plate = h("figure", { class: "plate" }, paper,
-    h("figcaption", null, h("span", null, "Plate · " + d.name), h("span", null, isEx ? "No. EX-01" : specNo(c.id))));
+  const fileInput = h("input", { type: "file", id: "art-file", accept: "image/png,image/jpeg,image/webp", hidden: true, onchange: e => { const f = e.target.files[0]; e.target.value = ""; attachArt(c.id, f); } });
+  const plate = h("figure", { class: "plate" }, paper, fileInput,
+    h("figcaption", null, h("span", null, (c.art ? "Plate · " + MODELS[c.art.model || "chatgpt"].label + " · " : "Plate · ") + d.name), h("span", null, isEx ? "No. EX-01" : specNo(c.id))),
+    c.art && canAttach ? h("div", { class: "row" }, attachBtn("Replace image"), h("button", { class: "btn small ghost", type: "button", disabled: !!b, onclick: () => detachArt(c.id) }, "Remove image")) : null);
+
+  // art prompt card
+  const promptText = (c.artPrompts || {})[artKey()];
+  const writingArt = b && b.what === "art";
+  const switchTo = (k, v) => {
+    state[k] = v;
+    try { localStorage.setItem(k === "artModel" ? "bestiary.model" : "bestiary.style", v); } catch {}
+    render();
+    if (!(c.artPrompts || {})[artKey()] && sample && state.sampleOk && !state.busy) makeArt(c.id);
+  };
+  const art = h("section", { class: "panel artcard", "aria-label": "Art prompt" },
+    h("div", { class: "panel-h" }, h("h2", null, "Art prompt"), h("span", { class: "tag" }, "Paste into an image AI")),
+    h("div", { class: "seg", role: "group", "aria-label": "Image model" },
+      ...Object.entries(MODELS).map(([k, m]) => h("button", { type: "button", "aria-pressed": String(state.artModel === k), disabled: !!b, onclick: () => switchTo("artModel", k) }, m.label))),
+    h("label", { class: "tag", for: "art-style" }, "Style"),
+    (() => { const sel = h("select", { id: "art-style", disabled: !!b, onchange: e => switchTo("artStyle", e.target.value) }, ...Object.entries(STYLES).map(([k, st]) => h("option", { value: k }, st.label))); sel.value = state.artStyle; return sel; })(),
+    writingArt ? h("p", { class: "hint" }, h("span", { "data-phase": "" }, ritualText()[0]), " ", h("span", { class: "tag", "data-count": "" }, ritualText()[1]))
+      : promptText ? h("textarea", { id: "art-text", readonly: true, rows: state.artModel === "grok" ? "6" : "10" }, promptText)
+      : h("p", { class: "hint" }, `No ${MODELS[state.artModel].label} prompt in this style yet.`),
+    h("div", { class: "row" },
+      promptText && !writingArt ? h("button", { class: "btn blood small", type: "button", onclick: () => copyArt(promptText) }, "Copy prompt") : null,
+      !writingArt ? h("button", { class: "btn small", type: "button", disabled: !!b || !state.sampleOk, onclick: () => makeArt(c.id) }, promptText ? "Rewrite" : "Write prompt") : null,
+      h("a", { class: "btn small ghost", href: MODELS[state.artModel].url, target: "_blank", rel: "noopener" }, "Open " + MODELS[state.artModel].label + " ↗")),
+    h("p", { class: "fine" }, state.artModel === "grok"
+      ? "Grok: go to Imagine, set a tall aspect ratio, paste, generate."
+      : "ChatGPT: paste into a new chat. If it softens the horror, reply \"darker, keep the anatomy exactly as described.\""));
+  const plateCol = h("div", { class: "plate-col" }, plate, art);
 
   // file
   const dread = h("span", { class: "dread", "aria-label": `Dread ${d.dread} of 5` }, ...Array.from({ length: 5 }, (_, i) => h("i", { class: i < d.dread ? "on" : "" })));
@@ -1009,12 +1126,13 @@ function renderSpecimen() {
     h("div", { class: "surg-row" },
       h("input", { type: "text", id: "surg-input", maxlength: "400", placeholder: isEx ? "Try it: make the hands in her chest belong to her own students" : "e.g. her jaw splits sideways instead of down; make weakness #2 more exploitable" }),
       h("button", { class: "btn blood", type: "button", disabled: !!b || !state.sampleOk, onclick: surgery }, b && b.what !== "dossier" ? "Working…" : "Cut")),
-    h("label", { class: "check" }, h("input", { type: "checkbox", id: "surg-sketch", checked: true }), "Re-ink the sketch when the body changes"),
+    h("label", { class: "check", hidden: !c.svg }, h("input", { type: "checkbox", id: "surg-sketch", checked: true }), "Re-ink the rough sketch when the body changes"),
+    h("p", { class: "hint" }, "Edits to the creature rewrite its art prompt too, so you can regenerate the image to match."),
     isEx ? h("p", { class: "hint" }, "Editing the example saves your version to Recent.") : null);
 
   const keepVal = $("#surg-input") ? $("#surg-input").value : "";
   const keepChk = $("#surg-sketch") ? $("#surg-sketch").checked : true;
-  box.replaceChildren(top, confirmBox || "", h("div", { class: "spec-grid" }, plate, file), surg);
+  box.replaceChildren(top, confirmBox || "", h("div", { class: "spec-grid" }, plateCol, file), surg);
   $("#surg-input").value = keepVal;
   $("#surg-sketch").checked = keepChk;
   $("#surg-input").addEventListener("keydown", e => { if (e.key === "Enter") surgery(); });
@@ -1048,7 +1166,7 @@ render();
   const C = window.claude;
   let db = null, user = null;
   if (C && C.use) {
-    [sample, downloads, db, user] = await Promise.all(["sample", "downloads", "db", "user"].map(n => C.use(n).catch(() => null)));
+    [sample, downloads, db, user, assets] = await Promise.all(["sample", "downloads", "db", "user", "assets"].map(n => C.use(n).catch(() => null)));
   }
   state.sampleOk = !!sample;
   $("#summon").disabled = !state.sampleOk;
