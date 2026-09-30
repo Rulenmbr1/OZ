@@ -1,0 +1,1065 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>Bestiary of the Unmade</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Pirata+One&family=Spectral:ital,wght@0,400;0,500;0,700;1,400&family=Special+Elite&display=swap">
+<style>[hidden]{display:none!important} body{margin:0} img{max-width:100%}</style>
+<style>
+/* Layout: a morgue intake desk. Vault of cells on the left, intake form on top, the specimen (inked plate on paper + case file) beneath. */
+:root {
+  --void: #0b0909;
+  --crypt: #141010;
+  --crypt-2: #1b1515;
+  --seam: #2e2323;
+  --bone: #ddd3c1;
+  --ash: #948878;
+  --clot: #8f1c15;
+  --clot-hi: #c0301f;
+  --clot-dim: #3a1311;
+  --paper: #d8ccb1;
+  --paper-edge: #b9a887;
+  --ink: #1d1712;
+  --ok: #7f8f5a;
+  --f-display: "Pirata One", "UnifrakturMaguntia", Georgia, serif;
+  --f-body: "Spectral", Georgia, "Times New Roman", serif;
+  --f-tag: "Special Elite", "Courier New", ui-monospace, monospace;
+  --r: 3px;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html, body { background: var(--void); color: var(--bone); }
+body {
+  font-family: var(--f-body);
+  font-size: 16px;
+  line-height: 1.55;
+  min-height: 100%;
+  background:
+    radial-gradient(ellipse 80% 60% at 50% -10%, rgba(143,28,21,.16), transparent 70%),
+    radial-gradient(ellipse 120% 100% at 50% 120%, rgba(0,0,0,.8), transparent 60%),
+    var(--void);
+}
+body::before {
+  content: ""; position: fixed; inset: 0; pointer-events: none; z-index: 50; opacity: .07;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+}
+.wrap { max-width: 1320px; margin: 0 auto; padding-inline: 16px; padding-block: 20px 60px; }
+h1, h2, h3 { text-wrap: balance; margin: 0; font-weight: normal; }
+button, input, textarea, select { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--clot-hi); outline-offset: 2px; }
+.tag { font-family: var(--f-tag); font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--ash); }
+
+/* Masthead */
+.mast { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 12px 24px; padding-bottom: 14px; border-bottom: 1px solid var(--seam); margin-bottom: 22px; }
+.mast h1 { font-family: var(--f-display); font-size: clamp(38px, 6vw, 64px); line-height: .9; color: var(--bone); letter-spacing: .01em; text-shadow: 0 0 24px rgba(192,48,31,.25); }
+.mast h1 em { font-style: normal; color: var(--clot-hi); }
+.mast p { margin: 6px 0 0; color: var(--ash); font-style: italic; max-width: 52ch; }
+.meters { display: flex; gap: 18px; flex-wrap: wrap; }
+.meter { display: grid; gap: 4px; }
+.meter .cells { display: flex; gap: 4px; }
+.meter .cell { width: 14px; height: 18px; border: 1px solid var(--seam); background: var(--crypt); border-radius: 1px; }
+.meter .cell.on { background: var(--clot); border-color: var(--clot-hi); }
+.meter .cell.pin.on { background: var(--bone); border-color: var(--bone); }
+
+/* Layout grid */
+.desk { display: grid; grid-template-columns: 290px minmax(0, 1fr); gap: 24px; align-items: start; }
+@media (max-width: 900px) { .desk { grid-template-columns: minmax(0,1fr); } .vault { order: 3; } }
+
+/* Panels */
+.panel { background: var(--crypt); border: 1px solid var(--seam); border-radius: var(--r); padding: 18px; }
+.panel-h { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; margin-bottom: 12px; }
+.panel-h h2 { font-family: var(--f-tag); font-size: 14px; letter-spacing: .14em; text-transform: uppercase; color: var(--bone); }
+
+/* Intake */
+.intake label.lead { display: block; font-size: 18px; margin-bottom: 8px; }
+textarea#prompt { width: 100%; min-height: 108px; resize: vertical; padding: 12px 14px; background: var(--void); border: 1px solid var(--seam); border-radius: var(--r); line-height: 1.5; }
+textarea#prompt::placeholder, input::placeholder, textarea::placeholder { color: #6b6157; font-style: italic; }
+.controls { display: flex; flex-wrap: wrap; gap: 14px 22px; align-items: flex-end; margin-top: 14px; }
+.ctl { display: grid; gap: 6px; min-width: 0; }
+.ctl input[type=text] { background: var(--void); border: 1px solid var(--seam); border-radius: var(--r); padding: 8px 10px; width: 200px; max-width: 100%; }
+.dial { display: flex; align-items: center; gap: 10px; }
+input[type=range] { accent-color: var(--clot-hi); width: 170px; }
+.dial output { font-family: var(--f-tag); font-size: 13px; color: var(--clot-hi); min-width: 11ch; }
+.go { margin-left: auto; display: flex; gap: 10px; }
+.btn { border: 1px solid var(--seam); background: var(--crypt-2); padding: 9px 16px; border-radius: var(--r); cursor: pointer; transition: border-color .15s, background .15s; }
+.btn:hover:not(:disabled) { border-color: var(--ash); }
+.btn:disabled { opacity: .45; cursor: not-allowed; }
+.btn.blood { background: var(--clot); border-color: var(--clot-hi); color: #f4ece0; font-family: var(--f-tag); letter-spacing: .1em; text-transform: uppercase; font-size: 14px; padding: 11px 22px; }
+.btn.blood:hover:not(:disabled) { background: var(--clot-hi); }
+.btn.small { padding: 6px 11px; font-size: 14px; }
+.btn.ghost { background: transparent; }
+.hint { font-size: 14px; color: var(--ash); margin: 10px 0 0; }
+.hint strong { color: var(--bone); font-weight: 500; }
+.warn { color: #e0a08f; }
+details.world { margin-top: 14px; border-top: 1px dashed var(--seam); padding-top: 12px; }
+details.world summary { cursor: pointer; font-family: var(--f-tag); font-size: 13px; letter-spacing: .08em; text-transform: uppercase; color: var(--ash); }
+details.world summary:hover { color: var(--bone); }
+details.world textarea { width: 100%; min-height: 140px; margin-top: 10px; padding: 10px 12px; background: var(--void); border: 1px solid var(--seam); border-radius: var(--r); font-size: 14px; }
+.row { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-top: 8px; }
+
+/* Ritual (loading) */
+.ritual { display: grid; gap: 10px; justify-items: center; text-align: center; padding: 40px 16px; }
+.ritual svg { width: min(420px, 100%); height: 60px; }
+.ritual .ecg { fill: none; stroke: var(--clot-hi); stroke-width: 2; stroke-dasharray: 900; stroke-dashoffset: 900; animation: ecg 2.4s linear infinite; }
+@keyframes ecg { to { stroke-dashoffset: 0; } }
+.ritual .phase { font-family: var(--f-tag); letter-spacing: .06em; }
+.ritual .count { font-family: var(--f-tag); font-size: 12px; color: var(--ash); font-variant-numeric: tabular-nums; }
+
+/* Specimen */
+.specimen { margin-top: 24px; }
+.spec-top { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 14px; }
+.spec-top .actions { display: flex; flex-wrap: wrap; gap: 8px; }
+.stamp { display: inline-block; font-family: var(--f-tag); font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: var(--clot-hi); border: 1.5px solid var(--clot-hi); padding: 3px 9px; transform: rotate(-2deg); }
+.spec-grid { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: 26px; align-items: start; }
+@media (max-width: 1100px) { .spec-grid { grid-template-columns: minmax(0,1fr); } }
+
+.plate { margin: 0; position: sticky; top: calc(env(safe-area-inset-top, 0px) + 12px); }
+@media (max-width: 1100px) { .plate { position: static; max-width: 560px; justify-self: center; width: 100%; } }
+.paper {
+  position: relative; aspect-ratio: 3 / 4; max-width: 100%;
+  background:
+    radial-gradient(ellipse at 30% 20%, rgba(255,255,255,.18), transparent 60%),
+    radial-gradient(circle at 82% 88%, rgba(110,60,20,.22), transparent 30%),
+    radial-gradient(circle at 12% 70%, rgba(143,28,21,.10), transparent 18%),
+    linear-gradient(var(--paper), #cdbf9f);
+  box-shadow: 0 0 0 1px var(--paper-edge) inset, 0 0 40px rgba(60,30,10,.45) inset, 0 18px 40px rgba(0,0,0,.6);
+  transform: rotate(-.6deg);
+  overflow: hidden;
+}
+.paper::after { content: ""; position: absolute; inset: 0; pointer-events: none; mix-blend-mode: multiply; opacity: .35;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='p'><feTurbulence type='fractalNoise' baseFrequency='.55' numOctaves='3'/><feColorMatrix values='0 0 0 0 .45  0 0 0 0 .35  0 0 0 0 .22  0 0 0 .9 0'/></filter><rect width='100%' height='100%' filter='url(%23p)'/></svg>"); }
+.paper > svg { position: absolute; inset: 0; width: 100%; height: 100%; filter: url(#bx-ink); }
+.paper .blank { position: absolute; inset: 0; display: grid; place-content: center; gap: 10px; text-align: center; padding: 24px; color: var(--ink); font-family: var(--f-tag); }
+.paper .blank .btn { background: transparent; border-color: var(--ink); color: var(--ink); justify-self: center; }
+.plate figcaption { display: flex; justify-content: space-between; gap: 10px; margin-top: 12px; font-family: var(--f-tag); font-size: 12px; color: var(--ash); letter-spacing: .06em; }
+
+.file { min-width: 0; }
+.file .no { font-family: var(--f-tag); font-size: 12px; letter-spacing: .12em; color: var(--ash); }
+.file h2.name { font-family: var(--f-display); font-size: clamp(40px, 5vw, 60px); line-height: .95; margin: 4px 0 6px; color: var(--bone); }
+.file .epithet { font-style: italic; font-size: 19px; color: #cbbfa9; margin: 0 0 14px; max-width: 58ch; }
+.facts { display: grid; grid-template-columns: max-content minmax(0,1fr); gap: 6px 16px; padding: 12px 0; border-block: 1px solid var(--seam); margin-bottom: 18px; font-size: 15px; }
+.facts dt { font-family: var(--f-tag); font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--ash); padding-top: 3px; }
+.facts dd { margin: 0; min-width: 0; }
+.dread { display: inline-flex; gap: 3px; vertical-align: middle; }
+.dread i { width: 10px; height: 16px; border: 1px solid var(--clot); display: inline-block; transform: skewX(-12deg); }
+.dread i.on { background: var(--clot-hi); border-color: var(--clot-hi); }
+.irony { font-size: 21px; line-height: 1.4; padding: 4px 0 4px 16px; border-left: 3px solid var(--clot); margin: 0 0 22px; max-width: 60ch; }
+.irony .flaw { display: block; font-family: var(--f-tag); font-size: 12px; letter-spacing: .12em; text-transform: uppercase; color: var(--clot-hi); margin-bottom: 4px; }
+.sect { margin-bottom: 22px; max-width: 68ch; }
+.sect h3 { font-family: var(--f-tag); font-size: 13px; letter-spacing: .14em; text-transform: uppercase; color: var(--clot-hi); margin-bottom: 8px; }
+.sect p { margin: 0 0 8px; }
+.anat { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+.anat li { display: grid; grid-template-columns: minmax(0, 150px) minmax(0,1fr); gap: 12px; padding-bottom: 10px; border-bottom: 1px dotted var(--seam); }
+.anat b { font-weight: 500; color: var(--bone); }
+@media (max-width: 520px) { .anat li { grid-template-columns: minmax(0,1fr); gap: 2px; } }
+.tells { margin: 0; padding-left: 20px; }
+.tells li::marker { content: "✕  "; color: var(--clot-hi); }
+.weak { display: grid; gap: 10px; }
+.weak div { background: var(--crypt-2); border: 1px solid var(--seam); border-radius: var(--r); padding: 10px 14px; }
+.weak b { display: block; font-weight: 500; }
+.weak span { color: #b9ad99; font-size: 15px; }
+.vignette { font-style: italic; color: #cfc4b0; border-top: 1px solid var(--seam); padding-top: 14px; }
+.vignette p::first-letter { font-family: var(--f-display); font-style: normal; font-size: 2.4em; float: left; line-height: .8; padding: 6px 8px 0 0; color: var(--clot-hi); }
+.editnote { font-family: var(--f-tag); font-size: 12px; color: var(--ok); letter-spacing: .04em; }
+
+/* Art prompt */
+.plate-col { display: grid; gap: 18px; min-width: 0; }
+.plate-col .plate { position: static; }
+@media (max-width: 1100px) { .plate-col { position: static; max-width: 560px; justify-self: center; width: 100%; } }
+.paper.has-art { transform: rotate(-.6deg); }
+.paper img.art { position: absolute; inset: 14px; width: calc(100% - 28px); height: calc(100% - 28px); object-fit: cover; box-shadow: 0 0 0 1px rgba(29,23,18,.5); }
+.paper .blank .steps { text-align: left; margin: 0 auto; padding-left: 20px; font-size: 14px; line-height: 1.6; }
+.linkish { background: none; border: 0; color: var(--ink); text-decoration: underline; cursor: pointer; font-family: var(--f-tag); font-size: 12px; }
+.attach { cursor: pointer; }
+.paper .blank .attach { background: var(--ink); color: var(--paper); border-color: var(--ink); justify-self: center; }
+.artcard { display: grid; gap: 10px; }
+.artcard .panel-h { margin-bottom: 0; }
+.seg { display: grid; grid-template-columns: 1fr 1fr; border: 1px solid var(--seam); border-radius: var(--r); overflow: hidden; }
+.seg button { background: var(--void); border: 0; padding: 9px 10px; cursor: pointer; font-family: var(--f-tag); letter-spacing: .06em; }
+.seg button + button { border-left: 1px solid var(--seam); }
+.seg button[aria-pressed=true] { background: var(--clot); color: #f4ece0; }
+.seg button:disabled { cursor: not-allowed; }
+.artcard select { background: var(--void); border: 1px solid var(--seam); border-radius: var(--r); padding: 8px 10px; }
+.artcard textarea { width: 100%; resize: vertical; background: var(--void); border: 1px solid var(--seam); border-radius: var(--r); padding: 10px 12px; font-size: 14px; line-height: 1.5; color: var(--bone); }
+.artcard .row { margin: 0; }
+.artcard a.btn { text-decoration: none; color: var(--bone); }
+.fine { margin: 0; font-size: 13px; color: var(--ash); font-style: italic; }
+.slot .thumb img.photo { filter: none; }
+
+/* Surgery */
+.surgery { margin-top: 26px; border-color: var(--clot-dim); background: linear-gradient(180deg, rgba(143,28,21,.08), transparent 60%), var(--crypt); }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
+.chip { border: 1px solid var(--seam); background: var(--void); border-radius: 20px; padding: 4px 12px; font-size: 14px; cursor: pointer; }
+.chip[aria-pressed=true] { border-color: var(--clot-hi); color: #f4ece0; background: var(--clot-dim); }
+.surg-row { display: flex; gap: 10px; flex-wrap: wrap; }
+.surg-row input { flex: 1 1 260px; min-width: 0; background: var(--void); border: 1px solid var(--seam); border-radius: var(--r); padding: 10px 12px; }
+.check { display: inline-flex; gap: 8px; align-items: center; font-size: 14px; color: var(--ash); margin-top: 10px; }
+.check input { accent-color: var(--clot-hi); }
+
+/* Vault */
+.vault { display: grid; gap: 18px; position: sticky; top: calc(env(safe-area-inset-top, 0px) + 12px); }
+@media (max-width: 900px) { .vault { position: static; } }
+.slots { display: grid; gap: 8px; }
+.slot { display: grid; grid-template-columns: 48px minmax(0,1fr); gap: 10px; align-items: center; padding: 6px; border: 1px solid var(--seam); border-radius: var(--r); background: var(--crypt-2); cursor: pointer; text-align: left; width: 100%; }
+.slot:hover { border-color: var(--ash); }
+.slot.active { border-color: var(--clot-hi); box-shadow: 0 0 0 1px var(--clot-hi) inset; }
+.slot .thumb { width: 48px; height: 64px; background: linear-gradient(var(--paper), #cdbf9f); border-radius: 2px; overflow: hidden; display: grid; place-items: center; }
+.slot .thumb img { width: 100%; height: 100%; object-fit: cover; filter: url(#bx-ink); }
+.slot .thumb span { font-family: var(--f-display); color: var(--ink); font-size: 22px; }
+.slot .meta { min-width: 0; }
+.slot .meta b { display: block; font-weight: 500; font-size: 15px; line-height: 1.2; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.slot .meta small { display: block; font-size: 12px; color: var(--ash); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.slot.empty { cursor: default; border-style: dashed; background: transparent; color: #5d544b; font-family: var(--f-tag); font-size: 12px; letter-spacing: .08em; grid-template-columns: minmax(0,1fr); min-height: 78px; place-items: center; }
+.slot.doomed { border-color: #6b2a22; }
+.slot.doomed .meta small { color: #e0a08f; }
+.vault .rule { font-size: 13px; color: var(--ash); margin: 10px 0 0; font-style: italic; }
+.storage-note { font-size: 12px; color: #6f655a; font-family: var(--f-tag); letter-spacing: .04em; }
+
+/* Inline confirm + toast */
+.confirm { margin-top: 10px; padding: 10px 12px; border: 1px solid var(--clot); border-radius: var(--r); background: var(--clot-dim); font-size: 14px; display: grid; gap: 8px; }
+.confirm .row { margin: 0; }
+.toast { position: fixed; left: 50%; bottom: calc(env(safe-area-inset-bottom, 0px) + 20px); transform: translateX(-50%); background: var(--crypt-2); border: 1px solid var(--clot); color: var(--bone); padding: 10px 16px; border-radius: var(--r); font-size: 14px; z-index: 60; max-width: calc(100vw - 32px); box-shadow: 0 10px 30px rgba(0,0,0,.6); }
+
+@media (prefers-reduced-motion: reduce) { .ritual .ecg { animation: none; stroke-dashoffset: 0; } }
+</style>
+
+<style>
+/* Grok edition additions */
+.connect { border-color: var(--clot); margin-bottom: 22px; }
+.connect ol { margin: 6px 0 12px; padding-left: 20px; }
+.connect ol li { margin-bottom: 4px; }
+.connect a, .settings a { color: var(--clot-hi); }
+.keyrow { display: flex; flex-wrap: wrap; gap: 10px; }
+.keyrow input { flex: 1 1 280px; min-width: 0; background: var(--void); border: 1px solid var(--seam); border-radius: var(--r); padding: 10px 12px; font-family: var(--f-tag); }
+.settings { margin-top: 14px; border-top: 1px dashed var(--seam); padding-top: 12px; }
+.settings summary { cursor: pointer; font-family: var(--f-tag); font-size: 13px; letter-spacing: .08em; text-transform: uppercase; color: var(--ash); }
+.settings summary:hover { color: var(--bone); }
+.set-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px 18px; margin-top: 12px; }
+.set-grid label { display: grid; gap: 6px; min-width: 0; }
+.set-grid select, .set-grid input { background: var(--void); border: 1px solid var(--seam); border-radius: var(--r); padding: 8px 10px; min-width: 0; }
+.cost { font-family: var(--f-tag); font-size: 12px; color: var(--ash); align-self: center; }
+.paper img.art { position: absolute; inset: 14px; width: calc(100% - 28px); height: calc(100% - 28px); object-fit: cover; box-shadow: 0 0 0 1px rgba(29,23,18,.5); }
+.paper .blank .btn.ink { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+.plate .row { justify-content: flex-start; }
+.plate-col { display: grid; gap: 18px; min-width: 0; }
+.plate-col .plate { position: static; }
+@media (max-width: 1100px) { .plate-col { max-width: 560px; justify-self: center; width: 100%; } }
+.artcard { display: grid; gap: 10px; }
+.artcard .panel-h { margin-bottom: 0; }
+.artcard textarea { width: 100%; resize: vertical; background: var(--void); border: 1px solid var(--seam); border-radius: var(--r); padding: 10px 12px; font-size: 14px; line-height: 1.5; color: var(--bone); }
+.artcard .row { margin: 0; }
+.slot .thumb img.photo { filter: none; }
+.vault-tools { display: flex; flex-wrap: wrap; gap: 8px; }
+a.btn { text-decoration: none; color: var(--bone); display: inline-block; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="mast">
+    <div>
+      <h1>Bestiary of the <em>Unmade</em></h1>
+      <p>Intake and classification of the formerly human. Describe the person, or the moment they broke. The flaw that took them is the body they keep.</p>
+    </div>
+    <div class="meters" aria-label="Storage">
+      <div class="meter"><span class="tag">Recent <span id="m-recent-n">0</span>/3</span><div class="cells" id="m-recent"></div></div>
+      <div class="meter"><span class="tag">Pinned <span id="m-pin-n">0</span>/5</span><div class="cells" id="m-pin"></div></div>
+    </div>
+  </header>
+
+  <section class="panel connect" id="connect" hidden>
+    <div class="panel-h"><h2>Connect Grok</h2><span class="tag">One-time setup</span></div>
+    <ol>
+      <li>Go to <a href="https://console.x.ai" target="_blank" rel="noopener">console.x.ai</a> and sign in with your xAI account.</li>
+      <li>Add a few dollars of credits under Billing. A creature costs about 5 to 7 cents with its image.</li>
+      <li>Open API Keys, create a key, and paste it here.</li>
+    </ol>
+    <div class="keyrow">
+      <input type="password" id="key-input" placeholder="xai-…" autocomplete="off" spellcheck="false" aria-label="xAI API key">
+      <button class="btn blood" id="key-save" type="button">Connect</button>
+    </div>
+    <p class="hint" id="key-msg">Your key is saved only in this browser. It never goes into the code or your repo, and it's only sent to xAI.</p>
+  </section>
+
+  <div class="desk">
+    <aside class="vault" aria-label="Vault">
+      <section class="panel">
+        <div class="panel-h"><h2>Pinned</h2><span class="tag" id="pin-count">0 / 5</span></div>
+        <div class="slots" id="pinned-slots"></div>
+        <p class="rule">Pinned specimens stay until you release them.</p>
+      </section>
+      <section class="panel">
+        <div class="panel-h"><h2>Recent</h2><span class="tag" id="recent-count">0 / 3</span></div>
+        <div class="slots" id="recent-slots"></div>
+        <p class="rule">Holds three. Each new creature purges the oldest unpinned one.</p>
+      </section>
+      <div class="vault-tools">
+        <button class="btn small" id="export" type="button">Back up vault</button>
+        <label class="btn small" for="import-file">Restore backup</label>
+        <input type="file" id="import-file" accept="application/json,.json" hidden>
+      </div>
+      <p class="storage-note">Saved in this browser on this device. Back up to move creatures to another device.</p>
+    </aside>
+
+    <main>
+      <section class="panel intake" aria-label="Intake">
+        <label class="lead" for="prompt">Who were they, and how did they break?</label>
+        <textarea id="prompt" placeholder="A hospice nurse who finally snapped at a patient's family during the funeral…"></textarea>
+        <div class="controls">
+          <div class="ctl">
+            <span class="tag">Intensity</span>
+            <div class="dial">
+              <input type="range" id="intensity" min="1" max="5" step="1" value="3" aria-describedby="intensity-out">
+              <output id="intensity-out">Nightmare</output>
+            </div>
+          </div>
+          <div class="ctl">
+            <label class="tag" for="seed-flaw">Force a flaw (optional)</label>
+            <input type="text" id="seed-flaw" placeholder="envy, spite, cowardice…" maxlength="60">
+          </div>
+          <div class="go">
+            <button class="btn ghost" id="stop" type="button" hidden>Stop</button>
+            <button class="btn blood" id="summon" type="button">Unmake them</button>
+          </div>
+        </div>
+        <p class="hint" id="intake-hint">Press Ctrl+Enter to summon.</p>
+
+        <details class="world" id="world">
+          <summary>Your world: canon notes Grok must obey</summary>
+          <textarea id="world-notes" maxlength="20000" placeholder="Paste your premise, setting, rules, or chapter excerpts. Every creature will be built to fit them."></textarea>
+          <div class="row">
+            <button class="btn small" id="save-world" type="button">Save notes</button>
+            <span class="tag" id="world-count">0 / 20,000</span>
+          </div>
+        </details>
+
+        <details class="settings" id="settings">
+          <summary>Settings</summary>
+          <div class="set-grid">
+            <label><span class="tag">Image style</span><select id="set-style"></select></label>
+            <label><span class="tag">Image model</span><select id="set-imodel"></select></label>
+            <label><span class="tag">Image size</span><select id="set-res"><option value="1k">Standard (1k)</option><option value="2k">Large (2k)</option></select></label>
+            <label><span class="tag">Writing model</span><input type="text" id="set-tmodel" spellcheck="false"></label>
+          </div>
+          <div class="row">
+            <button class="btn small" id="key-forget" type="button">Disconnect key</button>
+            <span class="storage-note">Writing model is the xAI model name. Leave it as grok-4.7 unless xAI retires it.</span>
+          </div>
+        </details>
+      </section>
+
+      <section class="specimen" id="specimen" aria-live="polite"></section>
+    </main>
+  </div>
+</div>
+
+<script>
+(() => {
+"use strict";
+
+/* ---------- shared creature design (same rules as the claude.ai edition) ---------- */
+const INTENSITY = {
+  1: ["Restrained", "Restrained. Grounded body horror; the wrongness is subtle enough to pass for human at a distance, and all the worse up close."],
+  2: ["Unsettling", "Unsettling. Clearly inhuman up close; the irony is sharp and specific but never cartoonish."],
+  3: ["Nightmare", "Nightmare. Fully monstrous; the irony is loud, grotesque and impossible to miss."],
+  4: ["Operatic", "Operatic. Big, theatrical, over-the-top grotesquerie; the irony is savage and almost darkly funny."],
+  5: ["Apocalyptic", "Apocalyptic. Maximum excess: the trait has eaten the whole body and the surrounding space. Freddy Krueger should need to sit down."]
+};
+const PHASES = ["Reconstructing the breaking point", "Isolating the trait that took over", "Letting it have the body", "Cataloguing what is left of them", "Writing up the case file"];
+const STYLES = {
+  concept: { label: "Concept art", text: "Professional creature concept art: a full-body character design painting for a horror film's production art department, highly detailed, painterly rendering, dramatic rim light, dark neutral backdrop." },
+  cinematic: { label: "Film still", text: "A still frame from a big-budget horror film: a practical-effects creature, photoreal skin and wet textures, anamorphic lens, shallow depth of field, motivated practical lighting, heavy film grain, desaturated grade." },
+  found: { label: "Found photo", text: "A found photograph that looks real and accidental: harsh on-camera flash or night-vision trail-camera shot, motion blur, awkward snapshot framing, cheap lens distortion, the creature half-caught in frame." },
+  oil: { label: "Dark oil painting", text: "A dark oil painting in the tradition of old-master chiaroscuro and 1970s horror paperback covers: heavy shadows, visible brushwork, muted earth palette with one sickly accent color." }
+};
+const WORLD_RULES = `You are the creature designer for a horror novel. Every creature in this world:
+- was once an ordinary human being;
+- is a predator: it hunts people;
+- was made during a meltdown, the moment the person broke, abandoned every value they held and went primal. In that moment one out-of-character trait took them over: a flaw, compulsion or ugly impulse they would have sworn they did not have (pettiness, the need to be right, envy, cowardice, possessiveness, vanity, spite, control, hunger for approval, and so on). The mutation makes that trait permanent and physical. It is ironic: the body literalizes the flaw, often cruelly, sometimes operatically over the top.
+
+Design principles:
+- Specific beats gory. Choose concrete, strange, anatomical details and one unforgettable signature image.
+- Keep human remnants that make it worse: jewelry grown into flesh, a work lanyard, a phrase it still repeats, a habit from its old life.
+- Behavior is the flaw in motion: how it stalks, lures, kills and feeds all echo the trait.
+- Weaknesses come from the same irony. The flaw that made it is the flaw that traps it. At least one weakness must be something a desperate, clever character could exploit in a scene. No generic weaknesses (fire, silver, sunlight, holy water) unless the irony truly earns them.
+- Avoid cliches: glowing red eyes, "razor-sharp teeth", default tentacles, black ooze, names like "The Shadow ___" or "___ Stalker". Names should sound like what survivors would actually call it.
+- Write like a novelist in control: vivid, concrete, unsentimental. No filler, no purple prose.`;
+
+const SCHEMA = `{
+  "name": "what survivors call it, 1-4 words",
+  "epithet": "one grim sentence that works as a subtitle",
+  "formerly": "who they were: one sentence with name, age, job, life",
+  "breakingPoint": "the meltdown as a specific scene, 2-4 sentences",
+  "flaw": "the trait that took over, 1-4 words",
+  "irony": "one sentence: how the mutation makes the flaw permanent",
+  "dread": 3,
+  "classification": "short field taxonomy, e.g. 'Lure predator / enclosed spaces / nocturnal'",
+  "appearance": "one paragraph, 80-130 words",
+  "anatomy": [{"part": "feature name", "detail": "1-2 sentences"}],
+  "hunting": "how it stalks, lures, kills and feeds, 60-110 words",
+  "tells": ["sign that it is near"],
+  "remnant": "what is still human about it, 1-3 sentences",
+  "weaknesses": [{"weakness": "short name", "why": "how it ties back to the flaw and how to exploit it"}],
+  "vignette": "a 90-140 word scene from a victim's or witness's point of view",
+  "sketchBrief": "precise visual brief for an ink concept sketch: pose, silhouette, proportions, the signature feature, 50-90 words"
+}
+anatomy: 4-6 items. tells: 3-4 items. weaknesses: 3-4 items. dread: integer 1-5.`;
+
+/* ---------- tiny DOM helper ---------- */
+const $ = (s, r = document) => r.querySelector(s);
+function h(tag, attrs, ...kids) {
+  const el = document.createElement(tag);
+  if (attrs) for (const [k, v] of Object.entries(attrs)) {
+    if (v == null || v === false) continue;
+    if (k === "class") el.className = v;
+    else if (k.startsWith("on")) el.addEventListener(k.slice(2), v);
+    else if (k === "text") el.textContent = v;
+    else el.setAttribute(k, v === true ? "" : v);
+  }
+  for (const k of kids.flat()) if (k != null && k !== false) el.append(k instanceof Node ? k : String(k));
+  return el;
+}
+function toast(msg) {
+  const t = h("div", { class: "toast", role: "status" }, msg);
+  document.body.append(t);
+  setTimeout(() => t.remove(), 3600);
+}
+const uid = () => "c" + Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
+const specNo = id => "No. " + id.slice(-5).toUpperCase();
+
+const EXAMPLE = {
+  id: "example", kind: "creature", isExample: true, createdAt: 0, pinned: false,
+  prompt: "a dance mom who lost it at her kid's recital", intensity: 4,
+  dossier: {
+    name: "The Encore",
+    epithet: "She is still waiting for her applause, and she will take it from you.",
+    formerly: "Denise Harrow, 41, dance-studio owner, the mother who ran every recital from the wings with a clipboard and a smile.",
+    breakingPoint: "Her daughter froze onstage at the spring showcase and the audience laughed. Denise walked out under the lights, took the microphone, and screamed at two hundred parents to LOOK AT HER, she had done ALL OF THIS. When they started filing out, she locked the auditorium doors.",
+    flaw: "Hunger to be seen",
+    irony: "She wanted every eye in the room on her, so now she cannot close a single one of her own, and she cannot stop anyone else from looking.",
+    dread: 4,
+    classification: "Lure predator / enclosed spaces / hunts at gatherings",
+    appearance: "Seven and a half feet of stage-lit skin stretched over a dancer's frame that no longer bends the right way. Her neck has lengthened to lift her face above any crowd. Her eyelids are gone; the lashes remain, glued in clumps. Her sternum has split along the seam of a sequined leotard and opened like theatre curtains, and inside, where the ribs should be, rows of small human hands clap on reflex, soft and wet, whenever anyone looks at her. She still wears the headset microphone. It still works.",
+    anatomy: [
+      { part: "The Curtain", detail: "A vertical split from collarbone to navel that parts on cue. The clapping hands inside belonged to her audience." },
+      { part: "Lidless eyes", detail: "Dry, cracked and fixed. She cannot blink, sleep, or stop watching whoever is watching her." },
+      { part: "The neck", detail: "Nearly two feet long, vertebrae showing like a string of pearls, built to keep her face above every other head in the room." },
+      { part: "Headset microphone", detail: "Fused into her cheek. Her voice comes through any speaker in range, calling people by name." },
+      { part: "The flourish", detail: "Fingers stretched to twice their length and locked in a presenter's gesture: ta-da." }
+    ],
+    hunting: "She hunts where people gather and face one direction: gyms, churches, lecture halls. She takes the stage, kills every light but one, and speaks through the sound system until someone looks up. Eye contact is the hook. Whoever holds her gaze for three seconds cannot look away, and she walks toward them slowly, bowing, while the hands in her chest clap faster. She folds victims into the curtain. Their hands stay behind as applause.",
+    tells: ["Feedback whine from speakers that are switched off", "A single spotlight comes on in an empty room", "Slow, wet clapping from somewhere above you", "Your name, said warmly, as if you are being introduced"],
+    remnant: "She still counts beats under her breath, five-six-seven-eight. Once, mid-hunt, she stopped to fix a child's posture, then went on.",
+    weaknesses: [
+      { weakness: "Indifference", why: "She only locks onto people who look at her. Keep your eyes down and your back turned and you are furniture to her." },
+      { weakness: "A rival in the light", why: "Put someone else in a spotlight and she abandons the hunt to upstage them. It buys time, and it costs the rival." },
+      { weakness: "Silence after the bow", why: "If the room refuses to clap when she bows, the hands in her chest go still and she freezes, waiting, for as long as the silence holds." },
+      { weakness: "Dry eyes", why: "Her lidless eyes are always failing. Smoke, chalk dust or bleach to the face blinds her for minutes." }
+    ],
+    vignette: "The gym lights went out at 9:40, all except one, which found the free-throw line and stayed there. Marcus heard the speakers pop. Then a woman's voice, bright as a morning announcement: \"Marcus Bell, everybody.\" He looked up. He knew he shouldn't have. She was standing in the light, taller than the backboard, bowing from the waist, and something in her chest had opened like curtains. He heard clapping. Small hands. Dozens of them. She came toward him on those long legs, still bowing, and he could not make his eyes let go.",
+    sketchBrief: "Gaunt, impossibly tall woman under a spotlight, bowing. Elongated neck, lidless eyes, headset mic. Chest split vertically like curtains revealing rows of small clapping hands. Long arm raised in a presenter's flourish, tattered recital skirt, snapped heels."
+  },
+  svg: null, rev: 0, lastEdit: null, prev: null
+};
+function worldBlock() {
+  const w = (state.settings.world || "").trim();
+  return w ? `\n\nCANON NOTES FROM THE AUTHOR (these override your defaults; obey them):\n"""\n${w.slice(0, 20000)}\n"""` : "";
+}
+function existingBlock() {
+  const list = creatures().map(c => `- ${c.dossier.name} (flaw: ${c.dossier.flaw})`).join("\n");
+  return list ? `\n\nCreatures already in the bestiary. Do not repeat their flaw, signature image or name:\n${list}` : "";
+}
+function dossierPrompt(text, level, flaw) {
+  return `${WORLD_RULES}${worldBlock()}${existingBlock()}
+
+INTENSITY ${level}/5: ${INTENSITY[level][1]}
+
+THE AUTHOR'S PROMPT (may be one line or a detailed brief; honor every specific detail it gives, then twist it and go further than they would expect):
+"""
+${text}
+"""
+${flaw ? `\nThe trait that took over MUST be: ${flaw}\n` : ""}
+Reply with only one JSON object in exactly this shape:
+${SCHEMA}`;
+}
+function editPrompt(rec, instr, target) {
+  return `${WORLD_RULES}${worldBlock()}
+
+You are making a SURGICAL EDIT to an existing creature. Do not regenerate it.
+- Apply only this edit. Keep every other field word-for-word identical.
+- Exception: if the edit makes another field contradict it (a new body part that invalidates a weakness, a new name used in the vignette), change that field just enough to stay consistent.
+${target !== "Anywhere" ? `- The author is targeting: ${target}. Focus the change there.\n` : ""}
+EDIT: ${instr}
+
+CURRENT CREATURE JSON:
+${JSON.stringify(rec.dossier)}
+
+Reply with only one JSON object:
+{"dossier": <the full updated creature, same shape and keys>, "summary": "one short line saying what changed", "sketchNeedsUpdate": true or false (true only if the creature's visible body, pose or clothing changed)}`;
+}
+const str = (v, d = "") => (typeof v === "string" ? v : v == null ? d : String(v)).trim();
+function normalize(d) {
+  if (!d || typeof d !== "object") throw { code: "invalid_json", message: "not an object" };
+  const arr = v => Array.isArray(v) ? v : [];
+  const out = {
+    name: str(d.name, "Unnamed"), epithet: str(d.epithet), formerly: str(d.formerly),
+    breakingPoint: str(d.breakingPoint), flaw: str(d.flaw), irony: str(d.irony),
+    dread: Math.min(5, Math.max(1, Math.round(Number(d.dread) || 3))),
+    classification: str(d.classification), appearance: str(d.appearance),
+    anatomy: arr(d.anatomy).map(a => ({ part: str(a && a.part), detail: str(a && a.detail) })).filter(a => a.part || a.detail),
+    hunting: str(d.hunting),
+    tells: arr(d.tells).map(t => str(t)).filter(Boolean),
+    remnant: str(d.remnant),
+    weaknesses: arr(d.weaknesses).map(w => ({ weakness: str(w && w.weakness), why: str(w && w.why) })).filter(w => w.weakness || w.why),
+    vignette: str(d.vignette), sketchBrief: str(d.sketchBrief),
+  };
+  if (!out.appearance && !out.anatomy.length) throw { code: "invalid_json", message: "empty creature" };
+  return out;
+}
+
+
+EXAMPLE.artPrompt = "Horrifically tall gaunt woman bowing under a single stage spotlight, chest split open vertically like theatre curtains revealing rows of small pale human hands mid-clap, lidless bloodshot eyes staring into camera, clumped false eyelashes, neck stretched two feet long with vertebrae like pearls, headset microphone fused into her cheek, elongated fingers frozen in a presenter's flourish, shredded sequined recital costume, snapped heels, empty school auditorium, dust in the light beam, creature concept art, painterly, hyper-detailed, dramatic rim light, cold black shadows, dread";
+EXAMPLE.style = "concept";
+
+
+/* ---------- Grok edition constants ---------- */
+const MAX_RECENT = 3, MAX_PINNED = 5;
+const API = "https://api.x.ai/v1";
+const TARGETS = ["Anywhere", "Name", "Anatomy", "Behavior", "Weaknesses", "Backstory", "Image only"];
+const IMAGE_MODELS = {
+  "grok-imagine-image-2.0": { label: "Imagine 2.0 (recommended)", cost: 0.04 },
+  "grok-imagine-image-quality": { label: "Imagine Quality", cost: 0.05 },
+  "grok-imagine-image": { label: "Imagine (cheapest)", cost: 0.02 },
+};
+const DEFAULTS = { key: "", textModel: "grok-4.7", imageModel: "grok-imagine-image-2.0", resolution: "1k", style: "concept", world: "" };
+const SET_KEY = "bestiary.grok.settings";
+
+/* ---------- settings (this browser only) ---------- */
+let settings = { ...DEFAULTS };
+try { settings = { ...DEFAULTS, ...JSON.parse(localStorage.getItem(SET_KEY) || "{}") }; } catch {}
+if (!(settings.imageModel in IMAGE_MODELS)) settings.imageModel = DEFAULTS.imageModel;
+if (!(settings.style in STYLES)) settings.style = DEFAULTS.style;
+function saveSettings() { try { localStorage.setItem(SET_KEY, JSON.stringify(settings)); } catch { toast("This browser won't let the page save settings. Private mode?"); } }
+
+/* ---------- storage: IndexedDB (images are too big for localStorage) ---------- */
+const idb = (() => {
+  let dbp = null;
+  const open = () => dbp || (dbp = new Promise((res, rej) => {
+    const r = indexedDB.open("bestiary-grok", 1);
+    r.onupgradeneeded = () => r.result.createObjectStore("creatures", { keyPath: "id" });
+    r.onsuccess = () => res(r.result);
+    r.onerror = () => rej(r.error);
+  }));
+  const tx = async (mode, fn) => {
+    const db = await open();
+    return new Promise((res, rej) => {
+      const t = db.transaction("creatures", mode);
+      const out = fn(t.objectStore("creatures"));
+      t.oncomplete = () => res(out && out.result);
+      t.onerror = () => rej(t.error);
+    });
+  };
+  return {
+    all: () => tx("readonly", s => s.getAll()),
+    put: rec => tx("readwrite", s => s.put(rec)),
+    del: id => tx("readwrite", s => s.delete(id)),
+  };
+})();
+let idbOk = true;
+
+/* ---------- state ---------- */
+const state = { items: [], currentId: "example", busy: null, target: "Anywhere", confirm: null };
+let ctl = null;
+const creatures = () => state.items;
+const pinned = () => state.items.filter(c => c.pinned).sort((a, b) => (a.pinnedAt || 0) - (b.pinnedAt || 0));
+const recents = () => state.items.filter(c => !c.pinned).sort((a, b) => b.createdAt - a.createdAt);
+const current = () => state.currentId === "example" ? EXAMPLE : state.items.find(c => c.id === state.currentId) || null;
+const plain = o => JSON.parse(JSON.stringify(o));
+
+async function persist(rec) {
+  const copy = plain(rec);
+  const i = state.items.findIndex(x => x.id === copy.id);
+  state.items = i >= 0 ? state.items.map(x => x.id === copy.id ? copy : x) : [...state.items, copy];
+  render();
+  if (!idbOk) return;
+  try { await idb.put(copy); }
+  catch (e) {
+    idbOk = false;
+    toast(e && e.name === "QuotaExceededError" ? "This browser's storage is full. Destroy a creature or back up and clear space." : "This browser won't store creatures (private mode?). They'll vanish when you close the tab.");
+  }
+}
+async function forget(id) {
+  state.items = state.items.filter(x => x.id !== id);
+  render();
+  if (idbOk) await idb.del(id).catch(() => {});
+}
+async function enforceRecent() { for (const c of recents().slice(MAX_RECENT)) await forget(c.id); }
+
+/* ---------- xAI calls ---------- */
+async function xai(path, body, signal) {
+  let r;
+  try {
+    r = await fetch(API + path, { method: "POST", signal, headers: { "Content-Type": "application/json", Authorization: "Bearer " + settings.key }, body: JSON.stringify(body) });
+  } catch (e) {
+    if (e && e.name === "AbortError") throw e;
+    throw { status: 0, message: "network" };
+  }
+  if (!r.ok) {
+    let msg = "";
+    try { const j = await r.json(); msg = (j.error && (j.error.message || j.error)) || j.message || j.code || JSON.stringify(j); }
+    catch { msg = await r.text().catch(() => ""); }
+    throw { status: r.status, message: String(msg) };
+  }
+  return r.json();
+}
+async function grokText(prompt, { json = false, signal } = {}) {
+  const body = { model: settings.textModel || DEFAULTS.textModel, messages: [{ role: "user", content: prompt }] };
+  if (json) body.response_format = { type: "json_object" };
+  let res;
+  try { res = await xai("/chat/completions", body, signal); }
+  catch (e) {
+    if (json && e.status === 400 && /response_format|json/i.test(e.message)) { delete body.response_format; res = await xai("/chat/completions", body, signal); }
+    else throw e;
+  }
+  let text = res && res.choices && res.choices[0] && res.choices[0].message && res.choices[0].message.content;
+  if (Array.isArray(text)) text = text.map(p => p.text || "").join("");
+  if (!text || !String(text).trim()) throw { status: 200, message: "empty" };
+  return String(text);
+}
+function parseJSON(text) {
+  const tries = [text, (text.match(/```(?:json)?\s*([\s\S]*?)```/) || [])[1], text.slice(text.indexOf("{"), text.lastIndexOf("}") + 1)];
+  for (const t of tries) { if (!t) continue; try { return JSON.parse(t); } catch {} }
+  throw { status: 200, message: "badjson" };
+}
+const grokJSON = async (prompt, signal) => parseJSON(await grokText(prompt, { json: true, signal }));
+const b64ToUrl = b64 => "data:" + (b64.startsWith("iVBOR") ? "image/png" : b64.startsWith("UklGR") ? "image/webp" : "image/jpeg") + ";base64," + b64;
+
+async function paint(prompt, signal) {
+  const res = await xai("/images/generations", {
+    model: settings.imageModel, prompt, n: 1, aspect_ratio: "2:3", resolution: settings.resolution, response_format: "b64_json",
+  }, signal);
+  const d = res && res.data && res.data[0];
+  if (!d || !d.b64_json) throw { status: 200, message: "noimage" };
+  return b64ToUrl(d.b64_json);
+}
+async function repaint(imageUrl, instr, signal) {
+  const res = await xai("/images/edits", {
+    model: "grok-imagine-image-2.0",
+    prompt: `${instr}. Keep the creature's identity, pose, composition, lighting, palette and art style exactly the same; change only what this edit describes. No text in the image.`,
+    image: { url: imageUrl, type: "image_url" }, response_format: "b64_json",
+  }, signal);
+  const d = res && res.data && res.data[0];
+  if (!d || !d.b64_json) throw { status: 200, message: "noimage" };
+  return b64ToUrl(d.b64_json);
+}
+
+/* ---------- prompts specific to Grok Imagine ---------- */
+function artRequest(d, style) {
+  return `You write prompts for xAI's Grok Imagine image model. Write ONE prompt that produces a genuinely terrifying, high-quality image of this horror creature.
+
+Format for Grok Imagine: 60-110 words. Put the creature and its signature feature in the first clause, then comma-separated visual descriptors: key anatomy, human remnants, setting, lighting, lens or framing, medium, color palette, mood. No full paragraphs, no instructions, no "please", no aspect-ratio text. Horror through wrongness, anatomy and texture beats gore; describe wounds as raw, split, fused, stretched, weeping.
+
+Style: ${STYLES[style].text}
+
+THE CREATURE
+The flaw made flesh (make this the focal point): ${d.flaw}. ${d.irony}
+Appearance: ${d.appearance}
+Anatomy: ${d.anatomy.map(a => a.part + ": " + a.detail).join(" | ")}
+Human remnants: ${d.remnant}
+Visual brief: ${d.sketchBrief}
+Where it hunts: ${d.classification}
+
+Rules: describe only what can be seen, no names or backstory; keep the human remnants visible; pick a setting and moment that fit how it hunts and a pose that reads as predatory; no living artists' names; no text, captions or labels in the image.
+Reply with only the prompt text.`;
+}
+const cleanPrompt = t => t.trim().replace(/^```\w*\n?|```$/g, "").replace(/^prompt:\s*/i, "").trim();
+
+/* ---------- errors ---------- */
+function errCopy(e) {
+  if (e && e.name === "AbortError") return "Stopped.";
+  const m = String((e && e.message) || "");
+  const s = e && e.status;
+  if (s === 0) return "Couldn't reach xAI. Check your internet connection.";
+  if (s === 401 || (s === 400 && /api key|apikey|incorrect key|invalid key/i.test(m))) return "xAI rejected your API key. Reconnect it under Settings.";
+  if (s === 402 || /credit|billing|balance|spending limit/i.test(m)) return "Your xAI account is out of credits. Add some at console.x.ai, then try again.";
+  if (s === 403) return "xAI refused the request: " + m.slice(0, 160);
+  if (s === 429) return "xAI says slow down (rate limit). Wait a minute and try again.";
+  if (/moderat|content policy|safety|violat/i.test(m)) return "Grok's content filter blocked that. Soften the wording (less gore, more wrongness) and try again.";
+  if (s === 404 || /model.*(not found|does not exist)/i.test(m)) return "That model name isn't available on your xAI account. Check Settings.";
+  if (m === "badjson" || m === "empty" || (e && e.code === "invalid_json")) return "Grok's answer came back garbled. Try again.";
+  if (m === "noimage") return "Grok didn't return an image. Try again.";
+  return "xAI error" + (s ? " " + s : "") + ": " + m.slice(0, 180);
+}
+const need = () => { if (!settings.key) { $("#connect").hidden = false; $("#key-input").focus(); toast("Connect your xAI key first."); return false; } return true; };
+
+/* ---------- actions ---------- */
+async function summon() {
+  if (state.busy || !need()) return;
+  const text = $("#prompt").value.trim();
+  if (!text) { $("#intake-hint").textContent = "Give me someone to break first."; $("#prompt").focus(); return; }
+  const level = Number($("#intensity").value), flaw = $("#seed-flaw").value.trim();
+  ctl = new AbortController(); const signal = ctl.signal;
+  setBusy("dossier");
+  let rec = null;
+  try {
+    const dossier = normalize(await grokJSON(dossierPrompt(text, level, flaw), signal));
+    rec = { id: uid(), createdAt: Date.now(), pinned: false, pinnedAt: null, prompt: text, intensity: level, dossier, artPrompt: "", image: null, style: settings.style, rev: 0, lastEdit: null, prev: null };
+    state.currentId = rec.id;
+    await persist(rec); await enforceRecent();
+    setBusy("art");
+    rec.artPrompt = cleanPrompt(await grokText(artRequest(dossier, settings.style), { signal }));
+    await persist(rec);
+    setBusy("paint");
+    rec.image = await paint(rec.artPrompt, signal);
+    await persist(rec);
+  } catch (e) {
+    if (!(e && e.name === "AbortError")) console.warn(e);
+    toast(rec ? "The creature is saved, but its image failed. " + errCopy(e) : errCopy(e));
+  } finally { setBusy(null); }
+}
+
+// Paint (or re-roll) the image for a creature; the example gets saved as a new creature.
+async function paintFor(id, { newPrompt = false } = {}) {
+  if (state.busy || !need()) return;
+  let rec = id === "example" ? EXAMPLE : state.items.find(c => c.id === id);
+  if (!rec) return;
+  ctl = new AbortController(); const signal = ctl.signal;
+  const next = plain(rec);
+  if (rec.isExample) { Object.assign(next, { id: uid(), isExample: false, createdAt: Date.now(), prev: null }); }
+  else if (rec.image) next.prev = { dossier: rec.dossier, artPrompt: rec.artPrompt, image: rec.image, lastEdit: rec.lastEdit };
+  try {
+    if (newPrompt || !next.artPrompt || next.style !== settings.style) {
+      setBusy("art");
+      next.artPrompt = cleanPrompt(await grokText(artRequest(next.dossier, settings.style), { signal }));
+      next.style = settings.style;
+    }
+    setBusy("paint");
+    next.image = await paint(next.artPrompt, signal);
+    if (rec.image) next.lastEdit = "New image rolled";
+    await persist(next);
+    if (rec.isExample) { state.currentId = next.id; await enforceRecent(); }
+  } catch (e) { toast(errCopy(e)); }
+  finally { setBusy(null); }
+}
+
+async function surgery() {
+  const rec = current();
+  const instr = $("#surg-input").value.trim();
+  if (!rec || !instr || state.busy || !need()) return;
+  ctl = new AbortController(); const signal = ctl.signal;
+  const target = state.target;
+  const alsoImage = $("#surg-image").checked;
+  const next = plain(rec);
+  if (next.isExample) Object.assign(next, { id: uid(), isExample: false, createdAt: Date.now() });
+  next.prev = rec.isExample ? null : { dossier: rec.dossier, artPrompt: rec.artPrompt, image: rec.image, lastEdit: rec.lastEdit };
+  const saveFirst = async () => { await persist(next); if (rec.isExample) { state.currentId = next.id; await enforceRecent(); } };
+  try {
+    if (target === "Image only") {
+      if (!rec.image) { toast("Paint the image first, then edit it."); return; }
+      setBusy("repaint");
+      next.image = await repaint(rec.image, instr, signal);
+      next.lastEdit = "Image: " + instr;
+      await saveFirst();
+    } else {
+      setBusy("edit");
+      const res = await grokJSON(editPrompt(rec, instr, target), signal);
+      next.dossier = normalize(res && res.dossier);
+      next.lastEdit = str(res && res.summary) || instr;
+      next.rev = (rec.rev || 0) + 1;
+      const bodyChanged = !!(res && res.sketchNeedsUpdate);
+      await saveFirst();
+      if (bodyChanged) {
+        setBusy("art");
+        next.artPrompt = cleanPrompt(await grokText(artRequest(next.dossier, settings.style), { signal }));
+        next.style = settings.style;
+        await persist(next);
+        if (alsoImage && rec.image) { setBusy("repaint"); next.image = await repaint(rec.image, instr, signal); await persist(next); }
+      }
+    }
+    $("#surg-input").value = "";
+    toast("Edit applied: " + next.lastEdit);
+  } catch (e) {
+    if (!(e && e.name === "AbortError")) console.warn(e);
+    toast(errCopy(e));
+  } finally { setBusy(null); }
+}
+
+async function undo(id) {
+  const rec = state.items.find(c => c.id === id);
+  if (!rec || !rec.prev) return;
+  const next = plain(rec);
+  Object.assign(next, { dossier: rec.prev.dossier, artPrompt: rec.prev.artPrompt, image: rec.prev.image, lastEdit: rec.prev.lastEdit, prev: null, rev: Math.max(0, (rec.rev || 1) - 1) });
+  await persist(next);
+  toast("Last change undone.");
+}
+async function pin(id) {
+  const rec = state.items.find(c => c.id === id);
+  if (!rec) return;
+  if (pinned().length >= MAX_PINNED) { toast("The pinned vault is full (5/5). Release one first."); return; }
+  await persist({ ...plain(rec), pinned: true, pinnedAt: Date.now() });
+  toast(rec.dossier.name + " is pinned.");
+}
+function askRelease(id) {
+  const rec = state.items.find(c => c.id === id);
+  if (!rec) return;
+  const r = recents(), doomed = r.length >= MAX_RECENT ? r[r.length - 1] : null;
+  state.confirm = { kind: "release", id, text: doomed
+    ? `Releasing sends ${rec.dossier.name} back to Recent, which is full. ${doomed.dossier.name} will be purged for good.`
+    : `Release ${rec.dossier.name} back to Recent? It will cycle out when three newer creatures arrive.` };
+  render();
+}
+async function release(id) {
+  const rec = state.items.find(c => c.id === id);
+  state.confirm = null;
+  if (!rec) return render();
+  await persist({ ...plain(rec), pinned: false, pinnedAt: null, createdAt: Date.now() });
+  await enforceRecent();
+}
+function askDiscard(id) {
+  const rec = state.items.find(c => c.id === id);
+  if (rec) { state.confirm = { kind: "discard", id, text: `Destroy ${rec.dossier.name}? This can't be undone.` }; render(); }
+}
+async function discard(id) { state.confirm = null; await forget(id); if (state.currentId === id) state.currentId = (recents()[0] || pinned()[0] || { id: "example" }).id; render(); toast("Destroyed."); }
+
+/* ---------- files ---------- */
+function toMarkdown(c) {
+  const d = c.dossier;
+  return [`# ${d.name}`, `*${d.epithet}*`, "", `**Formerly:** ${d.formerly}`, `**Flaw:** ${d.flaw}`, `**Dread:** ${d.dread}/5`, `**Classification:** ${d.classification}`, "", `> ${d.irony}`, "",
+    "## The breaking point", d.breakingPoint, "", "## Appearance", d.appearance, "", "## Anatomy", ...d.anatomy.map(a => `- **${a.part}:** ${a.detail}`), "",
+    "## How it hunts", d.hunting, "", "## Signs it is near", ...d.tells.map(t => `- ${t}`), "", "## What is left of them", d.remnant, "",
+    "## Weaknesses", ...d.weaknesses.map(w => `- **${w.weakness}:** ${w.why}`), "", "## Field account", d.vignette, "",
+    "---", `Image prompt: ${c.artPrompt || ""}`, `Original prompt: ${c.prompt || ""}`].join("\n");
+}
+const slug = c => (c.dossier.name || "creature").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || "creature";
+function download(filename, data, type) {
+  const url = typeof data === "string" && data.startsWith("data:") ? data : URL.createObjectURL(new Blob([data], { type }));
+  const a = h("a", { href: url, download: filename });
+  document.body.append(a); a.click(); a.remove();
+  if (!url.startsWith("data:")) setTimeout(() => URL.revokeObjectURL(url), 2000);
+}
+async function copyText(text, what) {
+  try { await navigator.clipboard.writeText(text); toast(what + " copied."); }
+  catch { toast("Copy was blocked. Select the text and copy it by hand."); }
+}
+$("#export").addEventListener("click", () => {
+  if (!state.items.length) { toast("The vault is empty. Nothing to back up."); return; }
+  download(`bestiary-backup-${new Date().toISOString().slice(0, 10)}.json`, JSON.stringify({ app: "bestiary-grok", version: 1, creatures: state.items }), "application/json");
+});
+$("#import-file").addEventListener("change", async e => {
+  const f = e.target.files[0]; e.target.value = "";
+  if (!f) return;
+  try {
+    const data = JSON.parse(await f.text());
+    const list = Array.isArray(data.creatures) ? data.creatures.filter(c => c && c.id && c.dossier) : [];
+    if (!list.length) throw 0;
+    const have = new Set(state.items.map(c => c.id));
+    let pins = pinned().length, added = 0, skipped = 0;
+    for (const c of list.sort((a, b) => a.createdAt - b.createdAt)) {
+      if (have.has(c.id)) continue;
+      const rec = { ...c, dossier: normalize(c.dossier) };
+      if (rec.pinned && pins >= MAX_PINNED) { rec.pinned = false; rec.pinnedAt = null; skipped++; }
+      if (rec.pinned) pins++;
+      await persist(rec); added++;
+    }
+    await enforceRecent();
+    toast(`Restored ${added} creature${added === 1 ? "" : "s"}.` + (skipped ? ` ${skipped} pinned one${skipped === 1 ? "" : "s"} went to Recent because Pinned was full.` : "") + " Recent keeps only the newest three.");
+  } catch { toast("That file isn't a Bestiary backup."); }
+});
+
+/* ---------- busy / progress ---------- */
+const BUSY_TEXT = { dossier: null, art: "Writing the image prompt", paint: "Grok is painting it", repaint: "Grok is repainting it", edit: "Operating" };
+let busyTimer = null, busyStart = 0, phase = 0;
+function setBusy(what) {
+  state.busy = what;
+  clearInterval(busyTimer);
+  phase = 0; busyStart = Date.now();
+  if (what) busyTimer = setInterval(() => { phase++; paintRitual(); }, 1000);
+  $("#summon").disabled = !!what;
+  $("#stop").hidden = !what;
+  render();
+}
+function ritualText() {
+  if (!state.busy) return ["", ""];
+  const secs = Math.round((Date.now() - busyStart) / 1000);
+  const msg = state.busy === "dossier" ? PHASES[Math.min(PHASES.length - 1, Math.floor(phase / 8))] : BUSY_TEXT[state.busy];
+  return [msg + "…", secs + "s" + (state.busy === "dossier" ? " · usually 20-60s" : state.busy === "paint" || state.busy === "repaint" ? " · usually 10-30s" : "")];
+}
+function paintRitual() {
+  const [a, b] = ritualText();
+  document.querySelectorAll("[data-phase]").forEach(el => el.textContent = a);
+  document.querySelectorAll("[data-count]").forEach(el => el.textContent = b);
+}
+function ecgSvg() {
+  const w = document.createElement("div");
+  w.innerHTML = `<svg viewBox="0 0 420 60" aria-hidden="true"><polyline class="ecg" points="0,30 60,30 72,30 78,12 84,48 90,30 150,30 162,30 168,6 176,54 182,24 188,36 194,30 250,30 256,20 262,44 270,8 278,52 286,30 330,30 336,30 342,18 348,40 352,30 420,30"/></svg>`;
+  return w.firstChild;
+}
+const ritual = () => { const [a, b] = ritualText(); return h("div", { class: "ritual" }, ecgSvg(), h("div", { class: "phase", "data-phase": "" }, a), h("div", { class: "count", "data-count": "" }, b)); };
+
+/* ---------- render ---------- */
+const imgCost = () => "≈ $" + IMAGE_MODELS[settings.imageModel].cost.toFixed(2);
+function thumb(c) {
+  return h("span", { class: "thumb" }, c.image ? h("img", { src: c.image, alt: "", class: "photo" }) : h("span", null, (c.dossier.name || "?")[0]));
+}
+function slot(c, doomed) {
+  return h("button", { type: "button", class: "slot" + (c.id === state.currentId ? " active" : "") + (doomed ? " doomed" : ""),
+    onclick: () => { state.currentId = c.id; state.confirm = null; render(); $("#specimen").scrollIntoView({ behavior: "smooth", block: "start" }); } },
+    thumb(c), h("span", { class: "meta" }, h("b", null, c.dossier.name), h("small", null, doomed ? "Purged by the next summoning" : c.dossier.flaw)));
+}
+function renderVault() {
+  const p = pinned(), r = recents();
+  $("#pinned-slots").replaceChildren(...p.map(c => slot(c)), ...Array.from({ length: MAX_PINNED - p.length }, () => h("div", { class: "slot empty" }, "Empty cell")));
+  $("#recent-slots").replaceChildren(...r.map((c, i) => slot(c, r.length >= MAX_RECENT && i === r.length - 1)), ...Array.from({ length: Math.max(0, MAX_RECENT - r.length) }, () => h("div", { class: "slot empty" }, "Empty cell")));
+  $("#pin-count").textContent = `${p.length} / ${MAX_PINNED}`; $("#recent-count").textContent = `${r.length} / ${MAX_RECENT}`;
+  $("#m-pin-n").textContent = p.length; $("#m-recent-n").textContent = r.length;
+  $("#m-pin").replaceChildren(...Array.from({ length: MAX_PINNED }, (_, i) => h("span", { class: "cell pin" + (i < p.length ? " on" : "") })));
+  $("#m-recent").replaceChildren(...Array.from({ length: MAX_RECENT }, (_, i) => h("span", { class: "cell" + (i < r.length ? " on" : "") })));
+  const hint = $("#intake-hint");
+  if (!state.busy) {
+    if (r.length >= MAX_RECENT) hint.replaceChildren("Recent is full. The next creature will purge ", h("strong", null, r[r.length - 1].dossier.name), ". Pin it to keep it.");
+    else hint.textContent = `Press Ctrl+Enter to summon. Each creature costs about ${(IMAGE_MODELS[settings.imageModel].cost + 0.02).toFixed(2)} dollars with its image.`;
+  }
+}
+const sect = (title, ...body) => h("section", { class: "sect" }, h("h3", null, title), ...body);
+const paras = t => String(t || "").split(/\n\s*\n/).filter(Boolean).map(x => h("p", null, x));
+
+function renderSpecimen() {
+  const box = $("#specimen");
+  const c = current(), b = state.busy;
+  if (b === "dossier") { box.replaceChildren(h("div", { class: "panel" }, ritual())); return; }
+  if (!c) { box.replaceChildren(); return; }
+  const d = c.dossier, isEx = !!c.isExample;
+  const B = (label, onclick, extra = {}) => h("button", { class: "btn small", type: "button", onclick, ...extra }, label);
+
+  const acts = h("div", { class: "actions" });
+  if (!isEx) acts.append(c.pinned ? B("Release", () => askRelease(c.id)) : B("Pin", () => pin(c.id), { disabled: pinned().length >= MAX_PINNED, title: pinned().length >= MAX_PINNED ? "Pinned vault is full" : null }));
+  acts.append(B("Copy", () => copyText(toMarkdown(c), "Case file")), B("Download .md", () => download(slug(c) + ".md", toMarkdown(c), "text/markdown")));
+  if (c.image) acts.append(B("Download image", () => download(slug(c) + (c.image.startsWith("data:image/png") ? ".png" : ".jpg"), c.image)));
+  if (!isEx && c.prev) acts.append(B("Undo", () => undo(c.id), { disabled: !!b }));
+  if (!isEx) acts.append(h("button", { class: "btn small ghost", type: "button", onclick: () => askDiscard(c.id) }, "Destroy"));
+  const top = h("div", { class: "spec-top" },
+    h("div", null, isEx ? h("span", { class: "stamp" }, "Example specimen · not saved") : h("span", { class: "tag" }, c.pinned ? "Pinned specimen" : "Recent specimen", c.rev ? ` · ${c.rev} edit${c.rev > 1 ? "s" : ""}` : "")),
+    acts);
+  let confirmBox = "";
+  if (state.confirm && state.confirm.id === c.id) {
+    const k = state.confirm.kind;
+    confirmBox = h("div", { class: "confirm", role: "alertdialog" }, h("span", null, state.confirm.text),
+      h("div", { class: "row" }, h("button", { class: "btn small blood", type: "button", onclick: () => k === "release" ? release(c.id) : discard(c.id) }, k === "release" ? "Release" : "Destroy"),
+        h("button", { class: "btn small ghost", type: "button", onclick: () => { state.confirm = null; render(); } }, "Cancel")));
+  }
+
+  // plate
+  const painting = b === "paint" || b === "repaint" || b === "art";
+  const paper = h("div", { class: "paper" });
+  if (c.image) paper.append(h("img", { class: "art", src: c.image, alt: "Image of " + d.name }));
+  if (painting) paper.append(h("div", { class: "blank", style: c.image ? "background: rgba(216,204,177,.8)" : null }, ecgSvg(), h("span", { "data-phase": "" }, ritualText()[0]), h("small", { "data-count": "" }, ritualText()[1])));
+  else if (!c.image) paper.append(h("div", { class: "blank" }, h("span", null, "No image yet."),
+    h("button", { class: "btn small ink", type: "button", onclick: () => paintFor(c.id) }, `Paint it with Grok (${imgCost()})`),
+    isEx ? h("small", null, "Painting the example saves it to your vault.") : null));
+  const plate = h("figure", { class: "plate" }, paper,
+    h("figcaption", null, h("span", null, "Plate · " + d.name), h("span", null, isEx ? "No. EX-01" : specNo(c.id))),
+    c.image ? h("div", { class: "row" },
+      B("New image, same prompt", () => paintFor(c.id), { disabled: !!b, title: imgCost() }),
+      B("New prompt + image", () => paintFor(c.id, { newPrompt: true }), { disabled: !!b })) : null);
+
+  const art = h("section", { class: "panel artcard", "aria-label": "Image prompt" },
+    h("div", { class: "panel-h" }, h("h2", null, "Image prompt"), h("span", { class: "tag" }, STYLES[c.style || settings.style].label)),
+    c.artPrompt ? h("textarea", { id: "art-text", readonly: true, rows: "6" }, c.artPrompt) : h("p", { class: "hint" }, "Written automatically when the image is painted."),
+    c.artPrompt ? h("div", { class: "row" }, B("Copy prompt", () => copyText(c.artPrompt, "Prompt"))) : null,
+    h("p", { class: "fine" }, `Change the style under Settings, then use "New prompt + image". Current style: ${STYLES[settings.style].label}.`));
+
+  const dread = h("span", { class: "dread", "aria-label": `Dread ${d.dread} of 5` }, ...Array.from({ length: 5 }, (_, i) => h("i", { class: i < d.dread ? "on" : "" })));
+  const file = h("article", { class: "file" },
+    h("div", { class: "no" }, (isEx ? "No. EX-01" : specNo(c.id)) + " · Intensity " + (INTENSITY[c.intensity] || INTENSITY[3])[0]),
+    h("h2", { class: "name" }, d.name),
+    d.epithet ? h("p", { class: "epithet" }, d.epithet) : null,
+    c.lastEdit ? h("p", { class: "editnote" }, "Last change: " + c.lastEdit) : null,
+    h("dl", { class: "facts" },
+      h("dt", null, "Formerly"), h("dd", null, d.formerly),
+      h("dt", null, "Dread"), h("dd", null, dread, " ", d.dread + " / 5"),
+      h("dt", null, "Class"), h("dd", null, d.classification),
+      c.prompt ? h("dt", null, "Prompt") : null, c.prompt ? h("dd", { style: "color: var(--ash); font-style: italic" }, c.prompt) : null),
+    h("blockquote", { class: "irony" }, h("span", { class: "flaw" }, "The flaw made flesh: " + d.flaw), d.irony),
+    sect("The breaking point", ...paras(d.breakingPoint)),
+    sect("Appearance", ...paras(d.appearance)),
+    sect("Anatomy", h("ul", { class: "anat" }, ...d.anatomy.map(a => h("li", null, h("b", null, a.part), h("span", null, a.detail))))),
+    sect("How it hunts", ...paras(d.hunting)),
+    sect("Signs it is near", h("ul", { class: "tells" }, ...d.tells.map(t => h("li", null, t)))),
+    sect("What is left of them", ...paras(d.remnant)),
+    sect("Weaknesses", h("div", { class: "weak" }, ...d.weaknesses.map(w => h("div", null, h("b", null, w.weakness), h("span", null, w.why))))),
+    h("section", { class: "sect vignette" }, h("h3", null, "Field account"), ...paras(d.vignette)));
+
+  const surg = h("section", { class: "panel surgery", "aria-label": "Surgical edit" },
+    h("div", { class: "panel-h" }, h("h2", null, "Surgical edit"), h("span", { class: "tag" }, "Changes only what you name")),
+    h("div", { class: "chips", role: "group", "aria-label": "Where to cut" },
+      ...TARGETS.map(t => h("button", { type: "button", class: "chip", "aria-pressed": String(state.target === t), onclick: () => { state.target = t; render(); } }, t))),
+    h("div", { class: "surg-row" },
+      h("input", { type: "text", id: "surg-input", maxlength: "400", placeholder: state.target === "Image only" ? "e.g. make it crawling on the ceiling; night rain; more of the ribs showing" : isEx ? "Try it: make the hands in her chest belong to her own students" : "e.g. her jaw splits sideways instead of down" }),
+      h("button", { class: "btn blood", type: "button", disabled: !!b, onclick: surgery }, b && b !== "dossier" ? "Working…" : "Cut")),
+    h("label", { class: "check", hidden: !c.image }, h("input", { type: "checkbox", id: "surg-image", checked: true }), `Repaint the image when the body changes (${imgCost()})`),
+    h("p", { class: "hint" }, "Image edits keep the same picture and change only what you describe. Undo restores the text and image from before the last change."));
+
+  const keepVal = $("#surg-input") ? $("#surg-input").value : "";
+  const keepChk = $("#surg-image") ? $("#surg-image").checked : true;
+  box.replaceChildren(top, confirmBox, h("div", { class: "spec-grid" }, h("div", { class: "plate-col" }, plate, art), file), surg);
+  $("#surg-input").value = keepVal; $("#surg-image").checked = keepChk;
+  $("#surg-input").addEventListener("keydown", e => { if (e.key === "Enter") surgery(); });
+}
+function render() { renderVault(); renderSpecimen(); }
+
+/* ---------- settings + setup wiring ---------- */
+function syncSettingsUI() {
+  $("#connect").hidden = !!settings.key;
+  $("#set-style").replaceChildren(...Object.entries(STYLES).map(([k, s]) => h("option", { value: k }, s.label)));
+  $("#set-style").value = settings.style;
+  $("#set-imodel").replaceChildren(...Object.entries(IMAGE_MODELS).map(([k, m]) => h("option", { value: k }, `${m.label} · $${m.cost.toFixed(2)}`)));
+  $("#set-imodel").value = settings.imageModel;
+  $("#set-res").value = settings.resolution;
+  $("#set-tmodel").value = settings.textModel;
+  $("#world-notes").value = settings.world || "";
+  updateWorldCount();
+}
+$("#key-save").addEventListener("click", async () => {
+  const k = $("#key-input").value.trim();
+  const msg = $("#key-msg");
+  if (!/^xai-/.test(k)) { msg.textContent = "xAI keys start with “xai-”. Copy the whole key from console.x.ai."; msg.className = "hint warn"; return; }
+  msg.textContent = "Checking the key with xAI…"; msg.className = "hint";
+  try {
+    const r = await fetch(API + "/models", { headers: { Authorization: "Bearer " + k } });
+    if (r.status === 401 || r.status === 403) { msg.textContent = "xAI rejected that key. Make sure you copied all of it, and that it hasn't been deleted."; msg.className = "hint warn"; return; }
+  } catch { /* offline check failed; save anyway */ }
+  settings.key = k; saveSettings(); $("#key-input").value = "";
+  syncSettingsUI(); render(); toast("Grok connected.");
+});
+$("#key-input").addEventListener("keydown", e => { if (e.key === "Enter") $("#key-save").click(); });
+$("#key-forget").addEventListener("click", () => { settings.key = ""; saveSettings(); syncSettingsUI(); toast("Key removed from this browser."); });
+$("#set-style").addEventListener("change", e => { settings.style = e.target.value; saveSettings(); render(); });
+$("#set-imodel").addEventListener("change", e => { settings.imageModel = e.target.value; saveSettings(); render(); });
+$("#set-res").addEventListener("change", e => { settings.resolution = e.target.value; saveSettings(); });
+$("#set-tmodel").addEventListener("change", e => { settings.textModel = e.target.value.trim() || DEFAULTS.textModel; e.target.value = settings.textModel; saveSettings(); });
+function updateWorldCount() { $("#world-count").textContent = `${$("#world-notes").value.length.toLocaleString()} / 20,000`; }
+$("#world-notes").addEventListener("input", updateWorldCount);
+$("#save-world").addEventListener("click", () => { settings.world = $("#world-notes").value; state.settings.world = settings.world; saveSettings(); toast("Canon notes saved. Every new creature will follow them."); });
+
+$("#intensity").addEventListener("input", () => { $("#intensity-out").textContent = INTENSITY[$("#intensity").value][0]; });
+$("#summon").addEventListener("click", summon);
+$("#stop").addEventListener("click", () => ctl && ctl.abort());
+$("#prompt").addEventListener("keydown", e => { if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) summon(); });
+try { const d = sessionStorage.getItem("bestiary.draft"); if (d) $("#prompt").value = d; } catch {}
+$("#prompt").addEventListener("input", e => { try { sessionStorage.setItem("bestiary.draft", e.target.value); } catch {} });
+
+state.settings = { world: settings.world || "" };
+syncSettingsUI();
+render();
+idb.all().then(items => {
+  state.items = (items || []).filter(c => c && c.id && c.dossier);
+  state.currentId = (recents()[0] || pinned()[0] || { id: "example" }).id;
+  render();
+}).catch(() => { idbOk = false; toast("This browser won't store creatures (private mode?). They'll vanish when you close the tab."); });
+})();
+</script>
+</body>
+</html>
