@@ -1,0 +1,1061 @@
+<title>Bestiary of the Unmade</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Pirata+One&family=Spectral:ital,wght@0,400;0,500;0,700;1,400&family=Special+Elite&display=swap">
+<style>
+/* Layout: a morgue intake desk. Vault of cells on the left, intake form on top, the specimen (inked plate on paper + case file) beneath. */
+:root {
+  --void: #0b0909;
+  --crypt: #141010;
+  --crypt-2: #1b1515;
+  --seam: #2e2323;
+  --bone: #ddd3c1;
+  --ash: #948878;
+  --clot: #8f1c15;
+  --clot-hi: #c0301f;
+  --clot-dim: #3a1311;
+  --paper: #d8ccb1;
+  --paper-edge: #b9a887;
+  --ink: #1d1712;
+  --ok: #7f8f5a;
+  --f-display: "Pirata One", "UnifrakturMaguntia", Georgia, serif;
+  --f-body: "Spectral", Georgia, "Times New Roman", serif;
+  --f-tag: "Special Elite", "Courier New", ui-monospace, monospace;
+  --r: 3px;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html, body { background: var(--void); color: var(--bone); }
+body {
+  font-family: var(--f-body);
+  font-size: 16px;
+  line-height: 1.55;
+  min-height: 100%;
+  background:
+    radial-gradient(ellipse 80% 60% at 50% -10%, rgba(143,28,21,.16), transparent 70%),
+    radial-gradient(ellipse 120% 100% at 50% 120%, rgba(0,0,0,.8), transparent 60%),
+    var(--void);
+}
+body::before {
+  content: ""; position: fixed; inset: 0; pointer-events: none; z-index: 50; opacity: .07;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+}
+.wrap { max-width: 1320px; margin: 0 auto; padding-inline: 16px; padding-block: 20px 60px; }
+h1, h2, h3 { text-wrap: balance; margin: 0; font-weight: normal; }
+button, input, textarea, select { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--clot-hi); outline-offset: 2px; }
+.tag { font-family: var(--f-tag); font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--ash); }
+
+/* Masthead */
+.mast { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 12px 24px; padding-bottom: 14px; border-bottom: 1px solid var(--seam); margin-bottom: 22px; }
+.mast h1 { font-family: var(--f-display); font-size: clamp(38px, 6vw, 64px); line-height: .9; color: var(--bone); letter-spacing: .01em; text-shadow: 0 0 24px rgba(192,48,31,.25); }
+.mast h1 em { font-style: normal; color: var(--clot-hi); }
+.mast p { margin: 6px 0 0; color: var(--ash); font-style: italic; max-width: 52ch; }
+.meters { display: flex; gap: 18px; flex-wrap: wrap; }
+.meter { display: grid; gap: 4px; }
+.meter .cells { display: flex; gap: 4px; }
+.meter .cell { width: 14px; height: 18px; border: 1px solid var(--seam); background: var(--crypt); border-radius: 1px; }
+.meter .cell.on { background: var(--clot); border-color: var(--clot-hi); }
+.meter .cell.pin.on { background: var(--bone); border-color: var(--bone); }
+
+/* Layout grid */
+.desk { display: grid; grid-template-columns: 290px minmax(0, 1fr); gap: 24px; align-items: start; }
+@media (max-width: 900px) { .desk { grid-template-columns: minmax(0,1fr); } .vault { order: 3; } }
+
+/* Panels */
+.panel { background: var(--crypt); border: 1px solid var(--seam); border-radius: var(--r); padding: 18px; }
+.panel-h { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; margin-bottom: 12px; }
+.panel-h h2 { font-family: var(--f-tag); font-size: 14px; letter-spacing: .14em; text-transform: uppercase; color: var(--bone); }
+
+/* Intake */
+.intake label.lead { display: block; font-size: 18px; margin-bottom: 8px; }
+textarea#prompt { width: 100%; min-height: 108px; resize: vertical; padding: 12px 14px; background: var(--void); border: 1px solid var(--seam); border-radius: var(--r); line-height: 1.5; }
+textarea#prompt::placeholder, input::placeholder, textarea::placeholder { color: #6b6157; font-style: italic; }
+.controls { display: flex; flex-wrap: wrap; gap: 14px 22px; align-items: flex-end; margin-top: 14px; }
+.ctl { display: grid; gap: 6px; min-width: 0; }
+.ctl input[type=text] { background: var(--void); border: 1px solid var(--seam); border-radius: var(--r); padding: 8px 10px; width: 200px; max-width: 100%; }
+.dial { display: flex; align-items: center; gap: 10px; }
+input[type=range] { accent-color: var(--clot-hi); width: 170px; }
+.dial output { font-family: var(--f-tag); font-size: 13px; color: var(--clot-hi); min-width: 11ch; }
+.go { margin-left: auto; display: flex; gap: 10px; }
+.btn { border: 1px solid var(--seam); background: var(--crypt-2); padding: 9px 16px; border-radius: var(--r); cursor: pointer; transition: border-color .15s, background .15s; }
+.btn:hover:not(:disabled) { border-color: var(--ash); }
+.btn:disabled { opacity: .45; cursor: not-allowed; }
+.btn.blood { background: var(--clot); border-color: var(--clot-hi); color: #f4ece0; font-family: var(--f-tag); letter-spacing: .1em; text-transform: uppercase; font-size: 14px; padding: 11px 22px; }
+.btn.blood:hover:not(:disabled) { background: var(--clot-hi); }
+.btn.small { padding: 6px 11px; font-size: 14px; }
+.btn.ghost { background: transparent; }
+.hint { font-size: 14px; color: var(--ash); margin: 10px 0 0; }
+.hint strong { color: var(--bone); font-weight: 500; }
+.warn { color: #e0a08f; }
+details.world { margin-top: 14px; border-top: 1px dashed var(--seam); padding-top: 12px; }
+details.world summary { cursor: pointer; font-family: var(--f-tag); font-size: 13px; letter-spacing: .08em; text-transform: uppercase; color: var(--ash); }
+details.world summary:hover { color: var(--bone); }
+details.world textarea { width: 100%; min-height: 140px; margin-top: 10px; padding: 10px 12px; background: var(--void); border: 1px solid var(--seam); border-radius: var(--r); font-size: 14px; }
+.row { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-top: 8px; }
+
+/* Ritual (loading) */
+.ritual { display: grid; gap: 10px; justify-items: center; text-align: center; padding: 40px 16px; }
+.ritual svg { width: min(420px, 100%); height: 60px; }
+.ritual .ecg { fill: none; stroke: var(--clot-hi); stroke-width: 2; stroke-dasharray: 900; stroke-dashoffset: 900; animation: ecg 2.4s linear infinite; }
+@keyframes ecg { to { stroke-dashoffset: 0; } }
+.ritual .phase { font-family: var(--f-tag); letter-spacing: .06em; }
+.ritual .count { font-family: var(--f-tag); font-size: 12px; color: var(--ash); font-variant-numeric: tabular-nums; }
+
+/* Specimen */
+.specimen { margin-top: 24px; }
+.spec-top { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 14px; }
+.spec-top .actions { display: flex; flex-wrap: wrap; gap: 8px; }
+.stamp { display: inline-block; font-family: var(--f-tag); font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: var(--clot-hi); border: 1.5px solid var(--clot-hi); padding: 3px 9px; transform: rotate(-2deg); }
+.spec-grid { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: 26px; align-items: start; }
+@media (max-width: 1100px) { .spec-grid { grid-template-columns: minmax(0,1fr); } }
+
+.plate { margin: 0; position: sticky; top: calc(env(safe-area-inset-top, 0px) + 12px); }
+@media (max-width: 1100px) { .plate { position: static; max-width: 560px; justify-self: center; width: 100%; } }
+.paper {
+  position: relative; aspect-ratio: 3 / 4; max-width: 100%;
+  background:
+    radial-gradient(ellipse at 30% 20%, rgba(255,255,255,.18), transparent 60%),
+    radial-gradient(circle at 82% 88%, rgba(110,60,20,.22), transparent 30%),
+    radial-gradient(circle at 12% 70%, rgba(143,28,21,.10), transparent 18%),
+    linear-gradient(var(--paper), #cdbf9f);
+  box-shadow: 0 0 0 1px var(--paper-edge) inset, 0 0 40px rgba(60,30,10,.45) inset, 0 18px 40px rgba(0,0,0,.6);
+  transform: rotate(-.6deg);
+  overflow: hidden;
+}
+.paper::after { content: ""; position: absolute; inset: 0; pointer-events: none; mix-blend-mode: multiply; opacity: .35;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='p'><feTurbulence type='fractalNoise' baseFrequency='.55' numOctaves='3'/><feColorMatrix values='0 0 0 0 .45  0 0 0 0 .35  0 0 0 0 .22  0 0 0 .9 0'/></filter><rect width='100%' height='100%' filter='url(%23p)'/></svg>"); }
+.paper > svg { position: absolute; inset: 0; width: 100%; height: 100%; filter: url(#bx-ink); }
+.paper .blank { position: absolute; inset: 0; display: grid; place-content: center; gap: 10px; text-align: center; padding: 24px; color: var(--ink); font-family: var(--f-tag); }
+.paper .blank .btn { background: transparent; border-color: var(--ink); color: var(--ink); justify-self: center; }
+.plate figcaption { display: flex; justify-content: space-between; gap: 10px; margin-top: 12px; font-family: var(--f-tag); font-size: 12px; color: var(--ash); letter-spacing: .06em; }
+
+.file { min-width: 0; }
+.file .no { font-family: var(--f-tag); font-size: 12px; letter-spacing: .12em; color: var(--ash); }
+.file h2.name { font-family: var(--f-display); font-size: clamp(40px, 5vw, 60px); line-height: .95; margin: 4px 0 6px; color: var(--bone); }
+.file .epithet { font-style: italic; font-size: 19px; color: #cbbfa9; margin: 0 0 14px; max-width: 58ch; }
+.facts { display: grid; grid-template-columns: max-content minmax(0,1fr); gap: 6px 16px; padding: 12px 0; border-block: 1px solid var(--seam); margin-bottom: 18px; font-size: 15px; }
+.facts dt { font-family: var(--f-tag); font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--ash); padding-top: 3px; }
+.facts dd { margin: 0; min-width: 0; }
+.dread { display: inline-flex; gap: 3px; vertical-align: middle; }
+.dread i { width: 10px; height: 16px; border: 1px solid var(--clot); display: inline-block; transform: skewX(-12deg); }
+.dread i.on { background: var(--clot-hi); border-color: var(--clot-hi); }
+.irony { font-size: 21px; line-height: 1.4; padding: 4px 0 4px 16px; border-left: 3px solid var(--clot); margin: 0 0 22px; max-width: 60ch; }
+.irony .flaw { display: block; font-family: var(--f-tag); font-size: 12px; letter-spacing: .12em; text-transform: uppercase; color: var(--clot-hi); margin-bottom: 4px; }
+.sect { margin-bottom: 22px; max-width: 68ch; }
+.sect h3 { font-family: var(--f-tag); font-size: 13px; letter-spacing: .14em; text-transform: uppercase; color: var(--clot-hi); margin-bottom: 8px; }
+.sect p { margin: 0 0 8px; }
+.anat { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+.anat li { display: grid; grid-template-columns: minmax(0, 150px) minmax(0,1fr); gap: 12px; padding-bottom: 10px; border-bottom: 1px dotted var(--seam); }
+.anat b { font-weight: 500; color: var(--bone); }
+@media (max-width: 520px) { .anat li { grid-template-columns: minmax(0,1fr); gap: 2px; } }
+.tells { margin: 0; padding-left: 20px; }
+.tells li::marker { content: "✕  "; color: var(--clot-hi); }
+.weak { display: grid; gap: 10px; }
+.weak div { background: var(--crypt-2); border: 1px solid var(--seam); border-radius: var(--r); padding: 10px 14px; }
+.weak b { display: block; font-weight: 500; }
+.weak span { color: #b9ad99; font-size: 15px; }
+.vignette { font-style: italic; color: #cfc4b0; border-top: 1px solid var(--seam); padding-top: 14px; }
+.vignette p::first-letter { font-family: var(--f-display); font-style: normal; font-size: 2.4em; float: left; line-height: .8; padding: 6px 8px 0 0; color: var(--clot-hi); }
+.editnote { font-family: var(--f-tag); font-size: 12px; color: var(--ok); letter-spacing: .04em; }
+
+/* Surgery */
+.surgery { margin-top: 26px; border-color: var(--clot-dim); background: linear-gradient(180deg, rgba(143,28,21,.08), transparent 60%), var(--crypt); }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
+.chip { border: 1px solid var(--seam); background: var(--void); border-radius: 20px; padding: 4px 12px; font-size: 14px; cursor: pointer; }
+.chip[aria-pressed=true] { border-color: var(--clot-hi); color: #f4ece0; background: var(--clot-dim); }
+.surg-row { display: flex; gap: 10px; flex-wrap: wrap; }
+.surg-row input { flex: 1 1 260px; min-width: 0; background: var(--void); border: 1px solid var(--seam); border-radius: var(--r); padding: 10px 12px; }
+.check { display: inline-flex; gap: 8px; align-items: center; font-size: 14px; color: var(--ash); margin-top: 10px; }
+.check input { accent-color: var(--clot-hi); }
+
+/* Vault */
+.vault { display: grid; gap: 18px; position: sticky; top: calc(env(safe-area-inset-top, 0px) + 12px); }
+@media (max-width: 900px) { .vault { position: static; } }
+.slots { display: grid; gap: 8px; }
+.slot { display: grid; grid-template-columns: 48px minmax(0,1fr); gap: 10px; align-items: center; padding: 6px; border: 1px solid var(--seam); border-radius: var(--r); background: var(--crypt-2); cursor: pointer; text-align: left; width: 100%; }
+.slot:hover { border-color: var(--ash); }
+.slot.active { border-color: var(--clot-hi); box-shadow: 0 0 0 1px var(--clot-hi) inset; }
+.slot .thumb { width: 48px; height: 64px; background: linear-gradient(var(--paper), #cdbf9f); border-radius: 2px; overflow: hidden; display: grid; place-items: center; }
+.slot .thumb img { width: 100%; height: 100%; object-fit: cover; filter: url(#bx-ink); }
+.slot .thumb span { font-family: var(--f-display); color: var(--ink); font-size: 22px; }
+.slot .meta { min-width: 0; }
+.slot .meta b { display: block; font-weight: 500; font-size: 15px; line-height: 1.2; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.slot .meta small { display: block; font-size: 12px; color: var(--ash); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.slot.empty { cursor: default; border-style: dashed; background: transparent; color: #5d544b; font-family: var(--f-tag); font-size: 12px; letter-spacing: .08em; grid-template-columns: minmax(0,1fr); min-height: 78px; place-items: center; }
+.slot.doomed { border-color: #6b2a22; }
+.slot.doomed .meta small { color: #e0a08f; }
+.vault .rule { font-size: 13px; color: var(--ash); margin: 10px 0 0; font-style: italic; }
+.storage-note { font-size: 12px; color: #6f655a; font-family: var(--f-tag); letter-spacing: .04em; }
+
+/* Inline confirm + toast */
+.confirm { margin-top: 10px; padding: 10px 12px; border: 1px solid var(--clot); border-radius: var(--r); background: var(--clot-dim); font-size: 14px; display: grid; gap: 8px; }
+.confirm .row { margin: 0; }
+.toast { position: fixed; left: 50%; bottom: calc(env(safe-area-inset-bottom, 0px) + 20px); transform: translateX(-50%); background: var(--crypt-2); border: 1px solid var(--clot); color: var(--bone); padding: 10px 16px; border-radius: var(--r); font-size: 14px; z-index: 60; max-width: calc(100vw - 32px); box-shadow: 0 10px 30px rgba(0,0,0,.6); }
+
+@media (prefers-reduced-motion: reduce) { .ritual .ecg { animation: none; stroke-dashoffset: 0; } }
+</style>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <filter id="bx-ink" x="-2%" y="-2%" width="104%" height="104%">
+    <feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="2" seed="7" result="n"/>
+    <feDisplacementMap in="SourceGraphic" in2="n" scale="3" xChannelSelector="R" yChannelSelector="G"/>
+  </filter>
+</svg>
+
+<div class="wrap">
+  <header class="mast">
+    <div>
+      <h1>Bestiary of the <em>Unmade</em></h1>
+      <p>Intake and classification of the formerly human. Describe the person, or the moment they broke. The flaw that took them is the body they keep.</p>
+    </div>
+    <div class="meters" aria-label="Storage">
+      <div class="meter"><span class="tag">Recent <span id="m-recent-n">0</span>/3</span><div class="cells" id="m-recent"></div></div>
+      <div class="meter"><span class="tag">Pinned <span id="m-pin-n">0</span>/5</span><div class="cells" id="m-pin"></div></div>
+    </div>
+  </header>
+
+  <div class="desk">
+    <aside class="vault" aria-label="Vault">
+      <section class="panel">
+        <div class="panel-h"><h2>Pinned</h2><span class="tag" id="pin-count">0 / 5</span></div>
+        <div class="slots" id="pinned-slots"></div>
+        <p class="rule">Pinned specimens stay until you release them.</p>
+      </section>
+      <section class="panel">
+        <div class="panel-h"><h2>Recent</h2><span class="tag" id="recent-count">0 / 3</span></div>
+        <div class="slots" id="recent-slots"></div>
+        <p class="rule">Holds three. Each new creature purges the oldest unpinned one.</p>
+      </section>
+      <p class="storage-note" id="storage-note">Opening the vault…</p>
+    </aside>
+
+    <main>
+      <section class="panel intake" aria-label="Intake">
+        <label class="lead" for="prompt">Who were they, and how did they break?</label>
+        <textarea id="prompt" placeholder="A hospice nurse who finally snapped at a patient's family during the funeral…"></textarea>
+        <div class="controls">
+          <div class="ctl">
+            <span class="tag">Intensity</span>
+            <div class="dial">
+              <input type="range" id="intensity" min="1" max="5" step="1" value="3" aria-describedby="intensity-out">
+              <output id="intensity-out">Nightmare</output>
+            </div>
+          </div>
+          <div class="ctl">
+            <label class="tag" for="seed-flaw">Force a flaw (optional)</label>
+            <input type="text" id="seed-flaw" placeholder="envy, spite, cowardice…" maxlength="60">
+          </div>
+          <div class="go">
+            <button class="btn ghost" id="stop" type="button" hidden>Stop</button>
+            <button class="btn blood" id="summon" type="button">Unmake them</button>
+          </div>
+        </div>
+        <p class="hint" id="intake-hint">Press Ctrl+Enter to summon. A sentence is enough; more detail gives you more control.</p>
+
+        <details class="world" id="world">
+          <summary>Your world: canon notes Claude must obey</summary>
+          <textarea id="world-notes" maxlength="20000" placeholder="Paste your premise, setting, rules, or chapter excerpts. Every creature will be built to fit them."></textarea>
+          <div class="row">
+            <button class="btn small" id="save-world" type="button">Save notes</button>
+            <span class="tag" id="world-count">0 / 20,000</span>
+          </div>
+        </details>
+      </section>
+
+      <section class="specimen" id="specimen" aria-live="polite"></section>
+    </main>
+  </div>
+</div>
+
+<script>
+(() => {
+"use strict";
+
+/* ---------- constants ---------- */
+const MAX_RECENT = 3, MAX_PINNED = 5;
+const INTENSITY = {
+  1: ["Restrained", "Restrained. Grounded body horror; the wrongness is subtle enough to pass for human at a distance, and all the worse up close."],
+  2: ["Unsettling", "Unsettling. Clearly inhuman up close; the irony is sharp and specific but never cartoonish."],
+  3: ["Nightmare", "Nightmare. Fully monstrous; the irony is loud, grotesque and impossible to miss."],
+  4: ["Operatic", "Operatic. Big, theatrical, over-the-top grotesquerie; the irony is savage and almost darkly funny."],
+  5: ["Apocalyptic", "Apocalyptic. Maximum excess: the trait has eaten the whole body and the surrounding space. Freddy Krueger should need to sit down."]
+};
+const PHASES = ["Reconstructing the breaking point", "Isolating the trait that took over", "Letting it have the body", "Cataloguing what is left of them", "Writing up the case file"];
+const TARGETS = ["Anywhere", "Name", "Anatomy", "Behavior", "Weaknesses", "Backstory", "Sketch only"];
+
+const WORLD_RULES = `You are the creature designer for a horror novel. Every creature in this world:
+- was once an ordinary human being;
+- is a predator: it hunts people;
+- was made during a meltdown, the moment the person broke, abandoned every value they held and went primal. In that moment one out-of-character trait took them over: a flaw, compulsion or ugly impulse they would have sworn they did not have (pettiness, the need to be right, envy, cowardice, possessiveness, vanity, spite, control, hunger for approval, and so on). The mutation makes that trait permanent and physical. It is ironic: the body literalizes the flaw, often cruelly, sometimes operatically over the top.
+
+Design principles:
+- Specific beats gory. Choose concrete, strange, anatomical details and one unforgettable signature image.
+- Keep human remnants that make it worse: jewelry grown into flesh, a work lanyard, a phrase it still repeats, a habit from its old life.
+- Behavior is the flaw in motion: how it stalks, lures, kills and feeds all echo the trait.
+- Weaknesses come from the same irony. The flaw that made it is the flaw that traps it. At least one weakness must be something a desperate, clever character could exploit in a scene. No generic weaknesses (fire, silver, sunlight, holy water) unless the irony truly earns them.
+- Avoid cliches: glowing red eyes, "razor-sharp teeth", default tentacles, black ooze, names like "The Shadow ___" or "___ Stalker". Names should sound like what survivors would actually call it.
+- Write like a novelist in control: vivid, concrete, unsentimental. No filler, no purple prose.`;
+
+const SCHEMA = `{
+  "name": "what survivors call it, 1-4 words",
+  "epithet": "one grim sentence that works as a subtitle",
+  "formerly": "who they were: one sentence with name, age, job, life",
+  "breakingPoint": "the meltdown as a specific scene, 2-4 sentences",
+  "flaw": "the trait that took over, 1-4 words",
+  "irony": "one sentence: how the mutation makes the flaw permanent",
+  "dread": 3,
+  "classification": "short field taxonomy, e.g. 'Lure predator / enclosed spaces / nocturnal'",
+  "appearance": "one paragraph, 80-130 words",
+  "anatomy": [{"part": "feature name", "detail": "1-2 sentences"}],
+  "hunting": "how it stalks, lures, kills and feeds, 60-110 words",
+  "tells": ["sign that it is near"],
+  "remnant": "what is still human about it, 1-3 sentences",
+  "weaknesses": [{"weakness": "short name", "why": "how it ties back to the flaw and how to exploit it"}],
+  "vignette": "a 90-140 word scene from a victim's or witness's point of view",
+  "sketchBrief": "precise visual brief for an ink concept sketch: pose, silhouette, proportions, the signature feature, 50-90 words"
+}
+anatomy: 4-6 items. tells: 3-4 items. weaknesses: 3-4 items. dread: integer 1-5.`;
+
+/* ---------- tiny DOM helper ---------- */
+const $ = (s, r = document) => r.querySelector(s);
+function h(tag, attrs, ...kids) {
+  const el = document.createElement(tag);
+  if (attrs) for (const [k, v] of Object.entries(attrs)) {
+    if (v == null || v === false) continue;
+    if (k === "class") el.className = v;
+    else if (k.startsWith("on")) el.addEventListener(k.slice(2), v);
+    else if (k === "text") el.textContent = v;
+    else el.setAttribute(k, v === true ? "" : v);
+  }
+  for (const k of kids.flat()) if (k != null && k !== false) el.append(k instanceof Node ? k : String(k));
+  return el;
+}
+function toast(msg) {
+  const t = h("div", { class: "toast", role: "status" }, msg);
+  document.body.append(t);
+  setTimeout(() => t.remove(), 3600);
+}
+const uid = () => "c" + Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
+const specNo = id => "No. " + id.slice(-5).toUpperCase();
+
+/* ---------- SVG handling ---------- */
+function sanitizeSvg(raw) {
+  if (!raw) return null;
+  let s = String(raw).replace(/```(?:svg|xml)?/gi, "");
+  const start = s.search(/<svg[\s>]/i);
+  if (start < 0) return null;
+  s = s.slice(start);
+  const end = s.lastIndexOf("</svg>");
+  if (end >= 0) s = s.slice(0, end + 6);
+  else { // truncated: cut to the last complete tag and close open groups
+    s = s.slice(0, s.lastIndexOf(">") + 1);
+    const open = (s.match(/<g[\s>]/g) || []).length - (s.match(/<\/g>/g) || []).length;
+    s += "</g>".repeat(Math.max(0, open)) + "</svg>";
+  }
+  const doc = new DOMParser().parseFromString(s, "image/svg+xml");
+  if (doc.querySelector("parsererror")) return null;
+  const svg = doc.documentElement;
+  if (!svg || svg.nodeName.toLowerCase() !== "svg") return null;
+  const banned = new Set(["script", "foreignobject", "iframe", "image", "audio", "video", "animate", "animatetransform", "animatemotion", "set", "style", "a", "filter"]);
+  const walk = el => {
+    for (const c of [...el.children]) {
+      if (banned.has(c.nodeName.toLowerCase())) { c.remove(); continue; }
+      for (const a of [...c.attributes]) {
+        const n = a.name.toLowerCase(), v = a.value.trim();
+        if (n.startsWith("on")) c.removeAttribute(a.name);
+        else if ((n === "href" || n === "xlink:href") && !v.startsWith("#")) c.removeAttribute(a.name);
+        else if (/url\(\s*['"]?(?!#)/i.test(v)) c.removeAttribute(a.name);
+        else if (n === "filter") c.removeAttribute(a.name);
+      }
+      walk(c);
+    }
+  };
+  for (const a of [...svg.attributes]) if (a.name.toLowerCase().startsWith("on")) svg.removeAttribute(a.name);
+  walk(svg);
+  if (!svg.getAttribute("viewBox")) svg.setAttribute("viewBox", "0 0 600 800");
+  svg.removeAttribute("width"); svg.removeAttribute("height");
+  svg.setAttribute("xmlns", "http://www.w3.org/2000/svg");
+  svg.setAttribute("preserveAspectRatio", "xMidYMid meet");
+  const out = new XMLSerializer().serializeToString(svg);
+  return out.length > 180000 ? null : out;
+}
+const svgUrl = svg => "data:image/svg+xml;charset=utf-8," + encodeURIComponent(svg);
+function inlineSvg(svg) {
+  const doc = new DOMParser().parseFromString(svg, "image/svg+xml");
+  const node = document.importNode(doc.documentElement, true);
+  node.setAttribute("role", "img");
+  return node;
+}
+
+/* ---------- example specimen (shown until the vault has something) ---------- */
+function exampleSvg() {
+  const I = "#1d1712", A = "#7a1410";
+  const p = [];
+  const path = (d, w = 2.2, extra = "") => p.push(`<path d="${d}" stroke-width="${w}" ${extra}/>`);
+  p.push(`<ellipse cx="300" cy="756" rx="175" ry="14" fill="${I}" fill-opacity=".14" stroke="none"/>`);
+  // head, hair coming undone
+  path("M300 60 C262 62 246 104 250 146 C254 186 272 210 300 214 C328 210 346 186 350 146 C354 104 338 62 300 60 Z", 3, `fill="${I}" fill-opacity=".06"`);
+  path("M262 84 C250 60 272 38 300 40 C330 38 350 60 338 84", 2.5);
+  for (let i = 0; i < 11; i++) path(`M${266 + i * 7} ${56 + (i % 3) * 3} C${262 + i * 8} ${34 - (i % 4) * 4} ${250 + i * 11} ${40 + (i % 3) * 6} ${236 + i * 13} ${26 + (i % 5) * 9}`, .9);
+  // sunken sockets, lidless eyes, pinprick pupils
+  for (const x of [279, 321]) {
+    path(`M${x - 17} 136 C${x - 14} 118 ${x + 14} 118 ${x + 17} 136 C${x + 14} 152 ${x - 14} 152 ${x - 17} 136 Z`, 1.6, `fill="${I}" fill-opacity=".55"`);
+    p.push(`<ellipse cx="${x}" cy="136" rx="10" ry="8" fill="#d8ccb1" stroke-width="1.4"/><circle cx="${x + (x < 300 ? 2 : -2)}" cy="136" r="1.8" fill="${I}"/>`);
+    for (let k = 0; k < 5; k++) path(`M${x - 8 + k * 4} 127 l${-2 + k} -8`, 1.2);
+    path(`M${x - 6} 146 C${x - 4} 158 ${x - 7} 168 ${x - 10} 176`, .9, `stroke="${A}"`);
+  }
+  // hollow cheeks
+  for (let i = 0; i < 7; i++) { path(`M${258 + i * 2} ${158 + i * 6} l8 -5`, .9); path(`M${342 - i * 2} ${158 + i * 6} l-8 -5`, .9); }
+  // unhinged jaw hanging open past the chin
+  path("M286 164 C282 196 284 236 292 268 L308 268 C316 236 318 196 314 164 C306 172 294 172 286 164 Z", 2, `fill="${I}"`);
+  path("M292 262 C296 272 304 272 308 262", 1.4, `fill="${A}" fill-opacity=".8"`);
+  for (let t = 0; t < 5; t++) path(`M${289 + t * 5.5} 168 l1 7`, 1.2, `stroke="#d8ccb1"`);
+  // headset mic
+  path("M252 126 C238 150 244 184 280 190", 2); p.push(`<circle cx="282" cy="190" r="4" fill="${I}"/>`);
+  // long neck with vertebrae
+  path("M284 212 C281 256 278 292 268 322", 2.4); path("M316 212 C319 256 322 292 332 322", 2.4);
+  for (let i = 0; i < 6; i++) p.push(`<ellipse cx="300" cy="${228 + i * 16}" rx="7" ry="5" stroke-width="1.4"/>`);
+  // shoulders and torso
+  path("M268 322 C228 324 198 334 176 354", 2.8); path("M332 322 C372 324 402 334 424 354", 2.8);
+  path("M196 348 C202 424 214 486 240 544", 2.6); path("M404 348 C398 424 386 486 360 544", 2.6);
+  path("M240 544 C272 564 328 564 360 544", 2.4);
+  // the curtain: split sternum
+  path("M300 330 C246 360 238 468 300 528 C362 468 354 360 300 330 Z", 2.6, `fill="${A}" fill-opacity=".35"`);
+  path("M300 344 C262 372 258 460 300 512 C342 460 338 372 300 344 Z", 1.2, `fill="${I}" fill-opacity=".55"`);
+  // curtain folds
+  for (let i = 0; i < 5; i++) { path(`M${258 - i * 4} ${370 + i * 26} C${248 - i * 6} ${380 + i * 26} ${240 - i * 6} ${392 + i * 26} ${226 - i * 4} ${398 + i * 26}`, 1.4); path(`M${342 + i * 4} ${370 + i * 26} C${352 + i * 6} ${380 + i * 26} ${360 + i * 6} ${392 + i * 26} ${374 + i * 4} ${398 + i * 26}`, 1.4); }
+  // small clapping hands inside
+  const hand = (x, y, flip) => {
+    const s = flip ? -1 : 1;
+    path(`M${x} ${y} c${6 * s} -4 ${14 * s} -4 ${18 * s} 2 c${2 * s} 6 ${-2 * s} 12 ${-10 * s} 12 c${-6 * s} 0 ${-10 * s} -6 ${-8 * s} -14 z`, 1.3, `fill="${"#d8ccb1"}" fill-opacity=".85"`);
+    for (let f = 0; f < 4; f++) path(`M${x + (4 + f * 4) * s} ${y - 2} l${(1 + f) * s} -9`, 1.1);
+  };
+  for (let r = 0; r < 5; r++) { hand(276, 378 + r * 26, false); hand(324, 378 + r * 26, true); }
+  // arms, presenter's flourish
+  path("M178 354 C160 430 150 520 146 606", 2.6); path("M190 360 C176 434 166 520 160 606", 1.6);
+  path("M422 354 C446 410 474 440 506 452", 2.6); path("M414 366 C436 418 462 452 498 466", 1.6);
+  for (let f = 0; f < 5; f++) path(`M${150 + f * 3} 606 C${146 + f * 4} ${640 + f * 4} ${140 + f * 6} ${672 + f * 6} ${136 + f * 8} ${700 + f * 3}`, 1.5);
+  for (let f = 0; f < 5; f++) path(`M${502} ${452 + f * 3} C${526 + f * 2} ${440 - f * 8} ${546 + f * 3} ${428 - f * 12} ${558 + f * 2} ${414 - f * 14}`, 1.5);
+  // tattered skirt
+  path("M236 540 L216 604 L236 594 L230 630 L254 606 L262 642 L278 610 L292 648 L304 612 L320 646 L330 610 L348 640 L352 602 L372 624 L366 588 L384 598 L364 540", 1.8, `fill="${I}" fill-opacity=".12"`);
+  // legs and snapped heels
+  path("M262 610 C256 660 250 706 244 744", 2.6); path("M340 610 C346 660 352 706 358 744", 2.6);
+  path("M244 744 L220 750 M244 744 L248 758 L240 766", 2); path("M358 744 L384 748 M358 744 L352 756 L362 766", 2);
+  // hatching on the left flank
+  for (let i = 0; i < 22; i++) path(`M${204 + i * 1.4} ${368 + i * 7} l14 -10`, .9);
+  for (let i = 0; i < 12; i++) path(`M${160 + i} ${420 + i * 14} l10 -6`, .8);
+  // spotlight cone
+  p.push(`<path d="M300 0 L120 780 L480 780 Z" fill="${I}" fill-opacity=".04" stroke="none"/>`);
+  // annotations
+  const note = (x1, y1, x2, y2, txt, anchor = "start") => { path(`M${x1} ${y1} C${(x1 + x2) / 2} ${y1 - 12} ${(x1 + x2) / 2} ${y2 + 8} ${x2} ${y2}`, .9); p.push(`<text x="${x2 + (anchor === "start" ? 6 : -6)}" y="${y2 + 5}" text-anchor="${anchor}" font-family="Special Elite, Courier New, monospace" font-size="15" fill="${I}" stroke="none">${txt}</text>`); };
+  note(338, 132, 420, 96, "no lids");
+  note(332, 440, 400, 560, "hands clap on reflex");
+  note(262, 186, 170, 250, "mic still live", "end");
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 800"><g fill="none" stroke="${I}" stroke-linecap="round" stroke-linejoin="round">${p.join("")}</g></svg>`;
+}
+const EXAMPLE = {
+  id: "example", kind: "creature", isExample: true, createdAt: 0, pinned: false,
+  prompt: "a dance mom who lost it at her kid's recital", intensity: 4,
+  dossier: {
+    name: "The Encore",
+    epithet: "She is still waiting for her applause, and she will take it from you.",
+    formerly: "Denise Harrow, 41, dance-studio owner, the mother who ran every recital from the wings with a clipboard and a smile.",
+    breakingPoint: "Her daughter froze onstage at the spring showcase and the audience laughed. Denise walked out under the lights, took the microphone, and screamed at two hundred parents to LOOK AT HER, she had done ALL OF THIS. When they started filing out, she locked the auditorium doors.",
+    flaw: "Hunger to be seen",
+    irony: "She wanted every eye in the room on her, so now she cannot close a single one of her own, and she cannot stop anyone else from looking.",
+    dread: 4,
+    classification: "Lure predator / enclosed spaces / hunts at gatherings",
+    appearance: "Seven and a half feet of stage-lit skin stretched over a dancer's frame that no longer bends the right way. Her neck has lengthened to lift her face above any crowd. Her eyelids are gone; the lashes remain, glued in clumps. Her sternum has split along the seam of a sequined leotard and opened like theatre curtains, and inside, where the ribs should be, rows of small human hands clap on reflex, soft and wet, whenever anyone looks at her. She still wears the headset microphone. It still works.",
+    anatomy: [
+      { part: "The Curtain", detail: "A vertical split from collarbone to navel that parts on cue. The clapping hands inside belonged to her audience." },
+      { part: "Lidless eyes", detail: "Dry, cracked and fixed. She cannot blink, sleep, or stop watching whoever is watching her." },
+      { part: "The neck", detail: "Nearly two feet long, vertebrae showing like a string of pearls, built to keep her face above every other head in the room." },
+      { part: "Headset microphone", detail: "Fused into her cheek. Her voice comes through any speaker in range, calling people by name." },
+      { part: "The flourish", detail: "Fingers stretched to twice their length and locked in a presenter's gesture: ta-da." }
+    ],
+    hunting: "She hunts where people gather and face one direction: gyms, churches, lecture halls. She takes the stage, kills every light but one, and speaks through the sound system until someone looks up. Eye contact is the hook. Whoever holds her gaze for three seconds cannot look away, and she walks toward them slowly, bowing, while the hands in her chest clap faster. She folds victims into the curtain. Their hands stay behind as applause.",
+    tells: ["Feedback whine from speakers that are switched off", "A single spotlight comes on in an empty room", "Slow, wet clapping from somewhere above you", "Your name, said warmly, as if you are being introduced"],
+    remnant: "She still counts beats under her breath, five-six-seven-eight. Once, mid-hunt, she stopped to fix a child's posture, then went on.",
+    weaknesses: [
+      { weakness: "Indifference", why: "She only locks onto people who look at her. Keep your eyes down and your back turned and you are furniture to her." },
+      { weakness: "A rival in the light", why: "Put someone else in a spotlight and she abandons the hunt to upstage them. It buys time, and it costs the rival." },
+      { weakness: "Silence after the bow", why: "If the room refuses to clap when she bows, the hands in her chest go still and she freezes, waiting, for as long as the silence holds." },
+      { weakness: "Dry eyes", why: "Her lidless eyes are always failing. Smoke, chalk dust or bleach to the face blinds her for minutes." }
+    ],
+    vignette: "The gym lights went out at 9:40, all except one, which found the free-throw line and stayed there. Marcus heard the speakers pop. Then a woman's voice, bright as a morning announcement: \"Marcus Bell, everybody.\" He looked up. He knew he shouldn't have. She was standing in the light, taller than the backboard, bowing from the waist, and something in her chest had opened like curtains. He heard clapping. Small hands. Dozens of them. She came toward him on those long legs, still bowing, and he could not make his eyes let go.",
+    sketchBrief: "Gaunt, impossibly tall woman under a spotlight, bowing. Elongated neck, lidless eyes, headset mic. Chest split vertically like curtains revealing rows of small clapping hands. Long arm raised in a presenter's flourish, tattered recital skirt, snapped heels."
+  },
+  svg: null, rev: 0, lastEdit: null, prev: null
+};
+EXAMPLE.svg = exampleSvg();
+
+/* ---------- state ---------- */
+const state = {
+  items: [],          // creatures from the store
+  settings: { world: "" },
+  currentId: null,    // id shown in the specimen area
+  busy: null,         // null | {phase, chars}
+  target: "Anywhere",
+  confirm: null,      // {kind, id, text}
+  sampleOk: true,
+};
+let sample = null, downloads = null, store = null, ctl = null;
+
+const creatures = () => state.items.filter(c => c.kind === "creature");
+const pinned = () => creatures().filter(c => c.pinned).sort((a, b) => (a.pinnedAt || 0) - (b.pinnedAt || 0));
+const recents = () => creatures().filter(c => !c.pinned).sort((a, b) => b.createdAt - a.createdAt);
+const current = () => state.currentId === "example" ? EXAMPLE : creatures().find(c => c.id === state.currentId) || null;
+
+/* ---------- storage ---------- */
+function plain(o) { return JSON.parse(JSON.stringify(o)); }
+
+function localStore(onChange, note) {
+  const KEY = "bestiary.v1";
+  let items = [];
+  try { items = JSON.parse(localStorage.getItem(KEY) || "[]"); } catch { items = []; }
+  const save = () => { try { localStorage.setItem(KEY, JSON.stringify(items)); } catch { /* memory only */ } onChange(items.slice()); };
+  $("#storage-note").textContent = note || "Saved in this browser only.";
+  setTimeout(() => onChange(items.slice()), 0);
+  return {
+    async put(rec) { const i = items.findIndex(x => x.id === rec.id); if (i >= 0) items[i] = plain(rec); else items.push(plain(rec)); save(); },
+    async remove(id) { items = items.filter(x => x.id !== id); save(); },
+  };
+}
+
+function dbStore(db, userId, onChange) {
+  const col = db.collection("data/users/" + userId);
+  const chains = new Map();
+  let degraded = null;
+  const queue = (id, fn) => {
+    const next = (chains.get(id) || Promise.resolve()).then(fn, fn);
+    chains.set(id, next.catch(() => {}));
+    return next;
+  };
+  col.onSnapshot(
+    snap => onChange(snap.docs.map(d => ({ ...d.data(), id: d.id }))),
+    () => { $("#storage-note").textContent = "Lost the connection to your vault. Reload to reconnect."; }
+  );
+  $("#storage-note").textContent = "Saved to your private vault on this page. Only you can see it.";
+  const fail = e => {
+    if (e && e.code === "invalid_argument" && !degraded) {
+      degraded = true;
+      toast("You can't save on this copy of the page. Open your own copy to keep creatures.");
+    } else if (e && e.code === "quota_exceeded") toast("The vault is full. Discard a creature and try again.");
+    throw e;
+  };
+  return {
+    put: rec => queue(rec.id, () => col.doc(rec.id).set(plain(rec))).catch(fail),
+    remove: id => queue(id, () => col.doc(id).delete()).catch(fail),
+  };
+}
+
+function onItems(items) {
+  state.items = items;
+  const s = items.find(i => i.id === "settings");
+  if (s) {
+    state.settings = { world: s.world || "" };
+    const ta = $("#world-notes");
+    if (document.activeElement !== ta && !ta.dataset.dirty) { ta.value = state.settings.world; updateWorldCount(); }
+  }
+  if (state.currentId && state.currentId !== "example" && !creatures().some(c => c.id === state.currentId)) state.currentId = null;
+  if (!state.currentId) state.currentId = (recents()[0] || pinned()[0] || {}).id || "example";
+  render();
+}
+
+// Update local state first so counts and eviction never wait on the store's round-trip.
+function persist(rec) {
+  const copy = plain(rec);
+  const i = state.items.findIndex(x => x.id === copy.id);
+  state.items = i >= 0 ? state.items.map(x => x.id === copy.id ? copy : x) : [...state.items, copy];
+  render();
+  return store.put(copy);
+}
+function forget(id) {
+  state.items = state.items.filter(x => x.id !== id);
+  render();
+  return store.remove(id);
+}
+async function enforceRecent() {
+  const extra = recents().slice(MAX_RECENT);
+  for (const c of extra) await forget(c.id).catch(() => {});
+}
+
+/* ---------- prompts ---------- */
+function worldBlock() {
+  const w = (state.settings.world || "").trim();
+  return w ? `\n\nCANON NOTES FROM THE AUTHOR (these override your defaults; obey them):\n"""\n${w.slice(0, 20000)}\n"""` : "";
+}
+function existingBlock() {
+  const list = creatures().map(c => `- ${c.dossier.name} (flaw: ${c.dossier.flaw})`).join("\n");
+  return list ? `\n\nCreatures already in the bestiary. Do not repeat their flaw, signature image or name:\n${list}` : "";
+}
+function dossierPrompt(text, level, flaw) {
+  return `${WORLD_RULES}${worldBlock()}${existingBlock()}
+
+INTENSITY ${level}/5: ${INTENSITY[level][1]}
+
+THE AUTHOR'S PROMPT (may be one line or a detailed brief; honor every specific detail it gives, then twist it and go further than they would expect):
+"""
+${text}
+"""
+${flaw ? `\nThe trait that took over MUST be: ${flaw}\n` : ""}
+Reply with only one JSON object in exactly this shape:
+${SCHEMA}`;
+}
+function sketchPrompt(d) {
+  return `Draw an ink concept sketch of this horror creature as a single SVG.
+
+Creature: ${d.name}
+The flaw made flesh: ${d.flaw}. ${d.irony}
+Visual brief: ${d.sketchBrief}
+Key anatomy: ${d.anatomy.map(a => a.part + ": " + a.detail).join(" | ")}
+
+Rules:
+- Output ONLY one <svg> element. No prose, no code fences.
+- xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 800". No width or height attributes.
+- Style: a concept artist's pen-and-ink field sketch on old paper. Transparent background: no full-canvas rectangle.
+- Ink color #1d1712 for all linework. stroke-linecap="round", stroke widths 0.8 to 4. Build form with confident contour lines, then shadow with hatching and cross-hatching (groups of short parallel strokes). Use fill="#1d1712" with fill-opacity 0.06-0.25 for masses and shadow, solid #1d1712 for the deepest darks (mouths, sockets, wounds).
+- One accent color, #7a1410, used sparingly (under 5% of the drawing) for raw, wet or bloody areas.
+- Full body in a predatory, characterful pose, occupying roughly x 60-540, y 30-770, with a soft ground-shadow ellipse beneath.
+- The signature feature must be the focal point and anatomically legible. Keep the human remnants visible (clothing scraps, jewelry, objects).
+- Add 2-3 handwritten-style annotation labels with thin curved leader lines pointing at key features: font-family="Special Elite, Courier New, monospace" font-size="15" fill="#1d1712" stroke="none". Labels under 6 words, fully inside the canvas.
+- Aim for rich detail: at least 70 elements. Organic shapes with cubic-curve paths, not plain circles and rectangles for body parts. Asymmetry is good.
+- No <script>, <image>, <foreignObject>, <style>, <filter>, CSS, links or animation.`;
+}
+function sketchEditPrompt(d, oldSvg, instr) {
+  return `You drew this ink concept sketch (SVG) of a horror creature called "${d.name}". Revise it to apply ONE edit.
+
+EDIT: ${instr}
+
+Current creature brief (already updated to match the edit): ${d.sketchBrief}
+
+Keep the composition, pose, style, colors (#1d1712 ink, #7a1410 accent), labels and every part the edit does not touch. Change only what the edit requires, and update or add a label if a labeled feature changed.
+Output ONLY the complete revised <svg> element, no prose, no code fences. Same rules as before: viewBox 0 0 600 800, no width/height, no script, image, foreignObject, style, filter or links.
+
+CURRENT SVG:
+${oldSvg}`;
+}
+function editPrompt(rec, instr, target) {
+  return `${WORLD_RULES}${worldBlock()}
+
+You are making a SURGICAL EDIT to an existing creature. Do not regenerate it.
+- Apply only this edit. Keep every other field word-for-word identical.
+- Exception: if the edit makes another field contradict it (a new body part that invalidates a weakness, a new name used in the vignette), change that field just enough to stay consistent.
+${target !== "Anywhere" ? `- The author is targeting: ${target}. Focus the change there.\n` : ""}
+EDIT: ${instr}
+
+CURRENT CREATURE JSON:
+${JSON.stringify(rec.dossier)}
+
+Reply with only one JSON object:
+{"dossier": <the full updated creature, same shape and keys>, "summary": "one short line saying what changed", "sketchNeedsUpdate": true or false (true only if the creature's visible body, pose or clothing changed)}`;
+}
+
+/* ---------- normalize ---------- */
+const str = (v, d = "") => (typeof v === "string" ? v : v == null ? d : String(v)).trim();
+function normalize(d) {
+  if (!d || typeof d !== "object") throw { code: "invalid_json", message: "not an object" };
+  const arr = v => Array.isArray(v) ? v : [];
+  const out = {
+    name: str(d.name, "Unnamed"), epithet: str(d.epithet), formerly: str(d.formerly),
+    breakingPoint: str(d.breakingPoint), flaw: str(d.flaw), irony: str(d.irony),
+    dread: Math.min(5, Math.max(1, Math.round(Number(d.dread) || 3))),
+    classification: str(d.classification), appearance: str(d.appearance),
+    anatomy: arr(d.anatomy).map(a => ({ part: str(a && a.part), detail: str(a && a.detail) })).filter(a => a.part || a.detail),
+    hunting: str(d.hunting),
+    tells: arr(d.tells).map(t => str(t)).filter(Boolean),
+    remnant: str(d.remnant),
+    weaknesses: arr(d.weaknesses).map(w => ({ weakness: str(w && w.weakness), why: str(w && w.why) })).filter(w => w.weakness || w.why),
+    vignette: str(d.vignette), sketchBrief: str(d.sketchBrief),
+  };
+  if (!out.appearance && !out.anatomy.length) throw { code: "invalid_json", message: "empty creature" };
+  return out;
+}
+
+/* ---------- errors ---------- */
+function errCopy(e) {
+  switch (e && e.code) {
+    case "cancelled": return "Stopped.";
+    case "not_granted": case "sampling_disabled": case "not_declared": case "capability_disabled": case "capability_removed":
+      state.sampleOk = false; return "Claude isn't allowed to run on this page for you, so new creatures can't be made here. Your vault still works.";
+    case "rate_limited": return "Too many summonings at once, or your Claude usage limit was reached. Wait a bit and try again.";
+    case "refused": return "Claude declined that one. Reword it around the person and their breaking point rather than real-world violence, and try again.";
+    case "invalid_json": case "empty_completion": return "The case file came back garbled. Try again.";
+    case "prompt_too_large": return "Your canon notes are too long to send. Trim them and try again.";
+    case "session_expired": return "Your session expired. Sign in again, then retry.";
+    default: return "The connection dropped mid-ritual. Try again.";
+  }
+}
+
+/* ---------- actions ---------- */
+async function drawSketch(d, signal, oldSvg, instr) {
+  const prompt = oldSvg ? sketchEditPrompt(d, oldSvg, instr) : sketchPrompt(d);
+  const { text } = await sample(prompt, {
+    signal, cache: false, modelTier: oldSvg ? "default" : "complex",
+    onText: ({ text }) => setProgress(text.length),
+  });
+  const svg = sanitizeSvg(text);
+  if (!svg) throw { code: "invalid_json", message: "no usable svg" };
+  return svg;
+}
+
+async function summon() {
+  if (state.busy) return;
+  const text = $("#prompt").value.trim();
+  if (!text) { $("#intake-hint").textContent = "Give me someone to break first."; $("#prompt").focus(); return; }
+  if (!sample) { toast(errCopy({ code: "not_granted" })); return; }
+  const level = Number($("#intensity").value);
+  const flaw = $("#seed-flaw").value.trim();
+  ctl = new AbortController();
+  const signal = ctl.signal;
+  setBusy({ phase: 0, chars: 0, what: "dossier" });
+  let rec = null;
+  try {
+    const raw = await sample.json(dossierPrompt(text, level, flaw), {
+      signal, cache: false, modelTier: "complex",
+      onText: ({ text }) => setProgress(text.length),
+    });
+    const dossier = normalize(raw);
+    rec = { id: uid(), kind: "creature", createdAt: Date.now(), pinned: false, pinnedAt: null, prompt: text, intensity: level, dossier, svg: null, rev: 0, lastEdit: null, prev: null };
+    state.currentId = rec.id;
+    await persist(rec);
+    await enforceRecent();
+    setBusy({ phase: 0, chars: 0, what: "sketch" });
+    rec.svg = await drawSketch(dossier, signal);
+    await persist(rec);
+  } catch (e) {
+    if (e && e.code !== "cancelled") console.warn(e);
+    toast(rec ? "The creature is saved, but the sketch failed. " + errCopy(e) : errCopy(e));
+  } finally {
+    setBusy(null);
+  }
+}
+
+async function redraw(id) {
+  const rec = creatures().find(c => c.id === id);
+  if (!rec || state.busy || !sample) return;
+  ctl = new AbortController();
+  setBusy({ phase: 0, chars: 0, what: "sketch" });
+  try {
+    const next = plain(rec);
+    next.svg = await drawSketch(next.dossier, ctl.signal);
+    await persist(next);
+  } catch (e) { toast(errCopy(e)); }
+  finally { setBusy(null); }
+}
+
+async function surgery() {
+  const rec = current();
+  const instr = $("#surg-input").value.trim();
+  if (!rec || !instr || state.busy) return;
+  if (!sample) { toast(errCopy({ code: "not_granted" })); return; }
+  ctl = new AbortController();
+  const signal = ctl.signal;
+  const target = state.target;
+  const alsoSketch = $("#surg-sketch").checked;
+  const next = plain(rec);
+  if (next.isExample) { next.id = uid(); next.isExample = false; next.createdAt = Date.now(); }
+  next.prev = rec.isExample ? null : { dossier: rec.dossier, svg: rec.svg, lastEdit: rec.lastEdit };
+  try {
+    if (target === "Sketch only") {
+      if (!rec.svg) throw { code: "invalid_json" };
+      setBusy({ phase: 0, chars: 0, what: "sketch-edit" });
+      next.svg = await drawSketch(next.dossier, signal, rec.svg, instr);
+      next.lastEdit = "Sketch: " + instr;
+    } else {
+      setBusy({ phase: 0, chars: 0, what: "edit" });
+      const res = await sample.json(editPrompt(rec, instr, target), { signal, cache: false, modelTier: "default", onText: ({ text }) => setProgress(text.length) });
+      next.dossier = normalize(res && res.dossier);
+      next.lastEdit = str(res && res.summary) || instr;
+      next.rev = (rec.rev || 0) + 1;
+      if (alsoSketch && res && res.sketchNeedsUpdate && rec.svg) {
+        await persist(next); // save the text edit before the slower redraw
+        if (rec.isExample) { state.currentId = next.id; await enforceRecent(); }
+        setBusy({ phase: 0, chars: 0, what: "sketch-edit" });
+        next.svg = await drawSketch(next.dossier, signal, rec.svg, instr);
+      }
+    }
+    await persist(next);
+    if (rec.isExample) { state.currentId = next.id; await enforceRecent(); }
+    $("#surg-input").value = "";
+    toast("Edit applied: " + next.lastEdit);
+  } catch (e) {
+    if (e && e.code !== "cancelled") console.warn(e);
+    toast(errCopy(e));
+  } finally { setBusy(null); }
+}
+
+async function undo(id) {
+  const rec = creatures().find(c => c.id === id);
+  if (!rec || !rec.prev) return;
+  const next = plain(rec);
+  next.dossier = rec.prev.dossier; next.svg = rec.prev.svg; next.lastEdit = rec.prev.lastEdit; next.prev = null;
+  next.rev = Math.max(0, (rec.rev || 1) - 1);
+  await persist(next);
+  toast("Last edit undone.");
+}
+
+async function pin(id) {
+  const rec = creatures().find(c => c.id === id);
+  if (!rec) return;
+  if (pinned().length >= MAX_PINNED) { toast("The pinned vault is full (5/5). Release one first."); return; }
+  await persist({ ...plain(rec), pinned: true, pinnedAt: Date.now() });
+  toast(rec.dossier.name + " is pinned.");
+}
+function askRelease(id) {
+  const rec = creatures().find(c => c.id === id);
+  if (!rec) return;
+  const r = recents();
+  const doomed = r.length >= MAX_RECENT ? r[r.length - 1] : null;
+  state.confirm = { kind: "release", id, text: doomed
+    ? `Releasing sends ${rec.dossier.name} back to Recent, which is full. ${doomed.dossier.name} will be purged for good.`
+    : `Release ${rec.dossier.name} back to Recent? It will cycle out when three newer creatures arrive.` };
+  render();
+}
+async function release(id) {
+  const rec = creatures().find(c => c.id === id);
+  state.confirm = null;
+  if (!rec) return render();
+  const next = { ...plain(rec), pinned: false, pinnedAt: null, createdAt: Date.now() };
+  await persist(next);
+  await enforceRecent();
+}
+function askDiscard(id) {
+  const rec = creatures().find(c => c.id === id);
+  if (!rec) return;
+  state.confirm = { kind: "discard", id, text: `Destroy ${rec.dossier.name}? This can't be undone.` };
+  render();
+}
+async function discard(id) { state.confirm = null; await forget(id); toast("Destroyed."); }
+
+function toMarkdown(c) {
+  const d = c.dossier;
+  return [
+    `# ${d.name}`, `*${d.epithet}*`, "",
+    `**Formerly:** ${d.formerly}`, `**Flaw:** ${d.flaw}`, `**Dread:** ${d.dread}/5`, `**Classification:** ${d.classification}`, "",
+    `> ${d.irony}`, "",
+    "## The breaking point", d.breakingPoint, "",
+    "## Appearance", d.appearance, "",
+    "## Anatomy", ...d.anatomy.map(a => `- **${a.part}:** ${a.detail}`), "",
+    "## How it hunts", d.hunting, "",
+    "## Signs it is near", ...d.tells.map(t => `- ${t}`), "",
+    "## What is left of them", d.remnant, "",
+    "## Weaknesses", ...d.weaknesses.map(w => `- **${w.weakness}:** ${w.why}`), "",
+    "## Field account", d.vignette, "",
+    "---", `Original prompt: ${c.prompt || ""}`
+  ].join("\n");
+}
+async function copyFile(c) {
+  const text = toMarkdown(c);
+  try { await navigator.clipboard.writeText(text); toast("Case file copied as Markdown."); }
+  catch { toast("Copy was blocked here. Use Download instead."); }
+}
+async function save(c, kind) {
+  if (!downloads) { toast("Downloads aren't available in this view."); return; }
+  const slug = c.dossier.name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || "creature";
+  try {
+    if (kind === "svg") await downloads.save({ filename: slug + "-sketch.svg", data: new Blob([c.svg], { type: "image/svg+xml" }) });
+    else await downloads.save({ filename: slug + ".md", data: toMarkdown(c) });
+  } catch (e) { if (e && e.code !== "declined") toast("Couldn't save the file here."); }
+}
+
+/* ---------- busy / progress ---------- */
+let phaseTimer = null;
+function setBusy(b) {
+  state.busy = b;
+  clearInterval(phaseTimer);
+  if (b && b.what === "dossier") phaseTimer = setInterval(() => { if (state.busy) { state.busy.phase = Math.min(PHASES.length - 1, state.busy.phase + 1); paintRitual(); } }, 9000);
+  $("#summon").disabled = !!b || !state.sampleOk;
+  $("#stop").hidden = !b;
+  render();
+}
+function setProgress(n) { if (state.busy) { state.busy.chars = n; paintRitual(); } }
+function ritualText() {
+  const b = state.busy;
+  if (!b) return ["", ""];
+  const msg = { dossier: PHASES[b.phase], sketch: "Inking the plate", "sketch-edit": "Re-inking the plate", edit: "Operating" }[b.what];
+  const n = b.chars ? `${b.chars.toLocaleString()} characters transcribed` : "Thinking… this can take up to a minute";
+  return [msg + "…", n];
+}
+function paintRitual() {
+  const [a, b] = ritualText();
+  document.querySelectorAll("[data-phase]").forEach(el => el.textContent = a);
+  document.querySelectorAll("[data-count]").forEach(el => el.textContent = b);
+}
+function ritual() {
+  const [a, b] = ritualText();
+  return h("div", { class: "ritual" },
+    ecgSvg(),
+    h("div", { class: "phase", "data-phase": "" }, a),
+    h("div", { class: "count", "data-count": "" }, b));
+}
+function ecgSvg() {
+  const wrap = document.createElement("div");
+  wrap.innerHTML = `<svg viewBox="0 0 420 60" aria-hidden="true"><polyline class="ecg" points="0,30 60,30 72,30 78,12 84,48 90,30 150,30 162,30 168,6 176,54 182,24 188,36 194,30 250,30 256,20 262,44 270,8 278,52 286,30 330,30 336,30 342,18 348,40 352,30 420,30"/></svg>`;
+  return wrap.firstChild;
+}
+
+/* ---------- render ---------- */
+function thumb(c) {
+  return h("span", { class: "thumb" }, c.svg ? h("img", { src: svgUrl(c.svg), alt: "" }) : h("span", null, (c.dossier.name || "?")[0]));
+}
+function slot(c, opts = {}) {
+  return h("button", {
+    type: "button", class: "slot" + (c.id === state.currentId ? " active" : "") + (opts.doomed ? " doomed" : ""),
+    onclick: () => { state.currentId = c.id; state.confirm = null; render(); $("#specimen").scrollIntoView({ behavior: "smooth", block: "start" }); }
+  }, thumb(c), h("span", { class: "meta" }, h("b", null, c.dossier.name), h("small", null, opts.doomed ? "Purged by the next summoning" : c.dossier.flaw)));
+}
+function renderVault() {
+  const p = pinned(), r = recents();
+  const pinBox = $("#pinned-slots"), recBox = $("#recent-slots");
+  pinBox.replaceChildren(...p.map(c => slot(c)), ...Array.from({ length: MAX_PINNED - p.length }, () => h("div", { class: "slot empty" }, "Empty cell")));
+  recBox.replaceChildren(...r.map((c, i) => slot(c, { doomed: r.length >= MAX_RECENT && i === r.length - 1 })), ...Array.from({ length: Math.max(0, MAX_RECENT - r.length) }, () => h("div", { class: "slot empty" }, "Empty cell")));
+  $("#pin-count").textContent = `${p.length} / ${MAX_PINNED}`;
+  $("#recent-count").textContent = `${r.length} / ${MAX_RECENT}`;
+  $("#m-pin-n").textContent = p.length; $("#m-recent-n").textContent = r.length;
+  $("#m-pin").replaceChildren(...Array.from({ length: MAX_PINNED }, (_, i) => h("span", { class: "cell pin" + (i < p.length ? " on" : "") })));
+  $("#m-recent").replaceChildren(...Array.from({ length: MAX_RECENT }, (_, i) => h("span", { class: "cell" + (i < r.length ? " on" : "") })));
+  const hint = $("#intake-hint");
+  if (!state.busy) {
+    if (!state.sampleOk) { hint.className = "hint warn"; hint.textContent = "Claude isn't available on this page for you, so new creatures can't be made. Open the page on claude.ai and allow Claude when asked."; }
+    else if (r.length >= MAX_RECENT) { hint.className = "hint"; hint.replaceChildren("Recent is full. The next creature will purge ", h("strong", null, r[r.length - 1].dossier.name), ". Pin it to keep it."); }
+    else { hint.className = "hint"; hint.textContent = "Press Ctrl+Enter to summon. A sentence is enough; more detail gives you more control."; }
+  }
+}
+
+function sect(title, ...body) { return h("section", { class: "sect" }, h("h3", null, title), ...body); }
+function paras(t) { return String(t || "").split(/\n\s*\n/).filter(Boolean).map(x => h("p", null, x)); }
+
+function renderSpecimen() {
+  const box = $("#specimen");
+  const c = current();
+  const b = state.busy;
+  if (b && b.what === "dossier") { box.replaceChildren(h("div", { class: "panel" }, ritual())); return; }
+  if (!c) { box.replaceChildren(); return; }
+  const d = c.dossier;
+  const isEx = !!c.isExample;
+
+  // toolbar
+  const acts = h("div", { class: "actions" });
+  if (!isEx) {
+    acts.append(c.pinned
+      ? h("button", { class: "btn small", type: "button", onclick: () => askRelease(c.id) }, "Release")
+      : h("button", { class: "btn small", type: "button", disabled: pinned().length >= MAX_PINNED, title: pinned().length >= MAX_PINNED ? "Pinned vault is full" : null, onclick: () => pin(c.id) }, "Pin"));
+  }
+  acts.append(h("button", { class: "btn small", type: "button", onclick: () => copyFile(c) }, "Copy"));
+  if (downloads) {
+    acts.append(h("button", { class: "btn small", type: "button", onclick: () => save(c, "md") }, "Download .md"));
+    if (c.svg) acts.append(h("button", { class: "btn small", type: "button", onclick: () => save(c, "svg") }, "Download sketch"));
+  }
+  if (!isEx && c.prev) acts.append(h("button", { class: "btn small", type: "button", disabled: !!b, onclick: () => undo(c.id) }, "Undo edit"));
+  if (!isEx) acts.append(h("button", { class: "btn small ghost", type: "button", onclick: () => askDiscard(c.id) }, "Destroy"));
+
+  const top = h("div", { class: "spec-top" },
+    h("div", null, isEx ? h("span", { class: "stamp" }, "Example specimen · not saved")
+      : h("span", { class: "tag" }, c.pinned ? "Pinned specimen" : "Recent specimen", c.rev ? ` · ${c.rev} edit${c.rev > 1 ? "s" : ""}` : "")),
+    acts);
+
+  let confirmBox = null;
+  if (state.confirm && state.confirm.id === c.id) {
+    const k = state.confirm.kind;
+    confirmBox = h("div", { class: "confirm", role: "alertdialog" }, h("span", null, state.confirm.text),
+      h("div", { class: "row" },
+        h("button", { class: "btn small blood", type: "button", onclick: () => k === "release" ? release(c.id) : discard(c.id) }, k === "release" ? "Release" : "Destroy"),
+        h("button", { class: "btn small ghost", type: "button", onclick: () => { state.confirm = null; render(); } }, "Cancel")));
+  }
+
+  // plate
+  const paper = h("div", { class: "paper" });
+  const sketching = b && (b.what === "sketch" || b.what === "sketch-edit");
+  if (c.svg && !(sketching && b.what === "sketch")) {
+    try { paper.append(inlineSvg(c.svg)); paper.lastChild.setAttribute("aria-label", "Ink sketch of " + d.name); } catch { /* bad svg */ }
+  }
+  if (sketching) {
+    paper.append(h("div", { class: "blank", style: c.svg ? "background: rgba(216,204,177,.78)" : null }, h("span", { "data-phase": "" }, ritualText()[0]), h("small", { "data-count": "" }, ritualText()[1])));
+  } else if (!c.svg) {
+    paper.append(h("div", { class: "blank" }, h("span", null, "No plate yet."), sample && !isEx ? h("button", { class: "btn small", type: "button", onclick: () => redraw(c.id) }, "Draw the sketch") : null));
+  }
+  const plate = h("figure", { class: "plate" }, paper,
+    h("figcaption", null, h("span", null, "Plate · " + d.name), h("span", null, isEx ? "No. EX-01" : specNo(c.id))));
+
+  // file
+  const dread = h("span", { class: "dread", "aria-label": `Dread ${d.dread} of 5` }, ...Array.from({ length: 5 }, (_, i) => h("i", { class: i < d.dread ? "on" : "" })));
+  const file = h("article", { class: "file" },
+    h("div", { class: "no" }, (isEx ? "No. EX-01" : specNo(c.id)) + " · Intensity " + (INTENSITY[c.intensity] || INTENSITY[3])[0]),
+    h("h2", { class: "name" }, d.name),
+    d.epithet ? h("p", { class: "epithet" }, d.epithet) : null,
+    c.lastEdit ? h("p", { class: "editnote" }, "Last edit: " + c.lastEdit) : null,
+    h("dl", { class: "facts" },
+      h("dt", null, "Formerly"), h("dd", null, d.formerly),
+      h("dt", null, "Dread"), h("dd", null, dread, " ", d.dread + " / 5"),
+      h("dt", null, "Class"), h("dd", null, d.classification),
+      c.prompt ? h("dt", null, "Prompt") : null, c.prompt ? h("dd", { style: "color: var(--ash); font-style: italic" }, c.prompt) : null),
+    h("blockquote", { class: "irony" }, h("span", { class: "flaw" }, "The flaw made flesh: " + d.flaw), d.irony),
+    sect("The breaking point", ...paras(d.breakingPoint)),
+    sect("Appearance", ...paras(d.appearance)),
+    sect("Anatomy", h("ul", { class: "anat" }, ...d.anatomy.map(a => h("li", null, h("b", null, a.part), h("span", null, a.detail))))),
+    sect("How it hunts", ...paras(d.hunting)),
+    sect("Signs it is near", h("ul", { class: "tells" }, ...d.tells.map(t => h("li", null, t)))),
+    sect("What is left of them", ...paras(d.remnant)),
+    sect("Weaknesses", h("div", { class: "weak" }, ...d.weaknesses.map(w => h("div", null, h("b", null, w.weakness), h("span", null, w.why))))),
+    h("section", { class: "sect vignette" }, h("h3", null, "Field account"), ...paras(d.vignette)));
+
+  // surgery
+  const surg = h("section", { class: "panel surgery", "aria-label": "Surgical edit" },
+    h("div", { class: "panel-h" }, h("h2", null, "Surgical edit"), h("span", { class: "tag" }, "Changes only what you name")),
+    h("div", { class: "chips", role: "group", "aria-label": "Where to cut" },
+      ...TARGETS.map(t => h("button", { type: "button", class: "chip", "aria-pressed": String(state.target === t), onclick: () => { state.target = t; render(); } }, t))),
+    h("div", { class: "surg-row" },
+      h("input", { type: "text", id: "surg-input", maxlength: "400", placeholder: isEx ? "Try it: make the hands in her chest belong to her own students" : "e.g. her jaw splits sideways instead of down; make weakness #2 more exploitable" }),
+      h("button", { class: "btn blood", type: "button", disabled: !!b || !state.sampleOk, onclick: surgery }, b && b.what !== "dossier" ? "Working…" : "Cut")),
+    h("label", { class: "check" }, h("input", { type: "checkbox", id: "surg-sketch", checked: true }), "Re-ink the sketch when the body changes"),
+    isEx ? h("p", { class: "hint" }, "Editing the example saves your version to Recent.") : null);
+
+  const keepVal = $("#surg-input") ? $("#surg-input").value : "";
+  const keepChk = $("#surg-sketch") ? $("#surg-sketch").checked : true;
+  box.replaceChildren(top, confirmBox || "", h("div", { class: "spec-grid" }, plate, file), surg);
+  $("#surg-input").value = keepVal;
+  $("#surg-sketch").checked = keepChk;
+  $("#surg-input").addEventListener("keydown", e => { if (e.key === "Enter") surgery(); });
+}
+
+function render() { renderVault(); renderSpecimen(); }
+
+/* ---------- world notes ---------- */
+function updateWorldCount() { $("#world-count").textContent = `${$("#world-notes").value.length.toLocaleString()} / 20,000`; }
+$("#world-notes").addEventListener("input", e => { e.target.dataset.dirty = "1"; updateWorldCount(); });
+$("#save-world").addEventListener("click", async () => {
+  const ta = $("#world-notes");
+  state.settings.world = ta.value;
+  try { await store.put({ id: "settings", kind: "settings", world: ta.value }); delete ta.dataset.dirty; toast("Canon notes saved. Every new creature will follow them."); }
+  catch { toast("Couldn't save your notes here."); }
+});
+
+/* ---------- wiring ---------- */
+const intensityOut = () => { $("#intensity-out").textContent = INTENSITY[$("#intensity").value][0]; };
+$("#intensity").addEventListener("input", intensityOut);
+$("#summon").addEventListener("click", summon);
+$("#stop").addEventListener("click", () => ctl && ctl.abort());
+$("#prompt").addEventListener("keydown", e => { if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) summon(); });
+try { const d = sessionStorage.getItem("bestiary.draft"); if (d) $("#prompt").value = d; } catch {}
+$("#prompt").addEventListener("input", e => { try { sessionStorage.setItem("bestiary.draft", e.target.value); } catch {} });
+
+state.currentId = "example";
+render();
+
+(async () => {
+  const C = window.claude;
+  let db = null, user = null;
+  if (C && C.use) {
+    [sample, downloads, db, user] = await Promise.all(["sample", "downloads", "db", "user"].map(n => C.use(n).catch(() => null)));
+  }
+  state.sampleOk = !!sample;
+  $("#summon").disabled = !state.sampleOk;
+  const userId = user ? await user.id() : null;
+  if (db && userId) store = dbStore(db, userId, onItems);
+  else store = localStore(onItems, C ? "Your private vault isn't available here, so creatures are saved in this browser only." : "Saved in this browser only.");
+  render();
+})();
+})();
+</script>
